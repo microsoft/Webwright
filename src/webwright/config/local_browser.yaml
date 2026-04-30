@@ -1,0 +1,79 @@
+# Live local browser modifier. Stack it on top of base.yaml, then add a model
+# modifier, for example:
+#
+#   python -m webwright.run.cli \
+#     -c base.yaml -c local_browser.yaml -c model_openai.yaml \
+#     -t "Open example.com and report the title" \
+#     --start-url https://example.com
+#
+# By default this uses real Edge/Chrome over CDP on http://127.0.0.1:9222
+# with ~/.cache/webwright/edge-profile, matching the browser startup
+# convention used by the local browser skills. Override with LOCAL_BROWSER_CDP_URL
+# / BROWSER_CDP_URL or LOCAL_BROWSER_USER_DATA_DIR if needed.
+# local_cdp uses the real browser window size instead of forcing a Playwright
+# viewport, so pages lay out like a normal user-controlled browser window.
+
+model:
+  action_field: python_code
+  attach_observation_screenshot: true
+  observation_template: |
+    Observation:
+    Status: {{ 'ok' if observation.success else 'error' }}
+    URL: {{ observation.url }}
+    Title: {{ observation.title }}
+    {% if observation.exception %}Exception:
+    {{ observation.exception }}
+    {% endif %}{% if observation.python_output %}Python output:
+    {{ observation.python_output }}
+    {% endif %}{% if observation.console_output %}Console output:
+    {{ observation.console_output }}
+    {% endif %}{% if observation.aria_snapshot %}ARIA snapshot:
+    {{ observation.aria_snapshot }}
+    {% endif %}{% if observation.screenshot_path %}Screenshot path: {{ observation.screenshot_path }}
+    {% endif %}
+environment:
+  environment_class: local_browser
+  # Modes:
+  # - local_launch: clean Playwright browser context, no saved cookies.
+  # - local_persistent: Playwright persistent context.
+  # - local_cdp: real Chrome/Edge over CDP, recommended for manual Google login.
+  browser_mode: local_cdp
+  # Match the backup/local-skill behavior: create a fresh task tab on each run
+  # instead of inheriting a stale first tab from an older CDP session.
+  local_cdp_new_page: true
+
+agent:
+  require_self_reflection_success: false
+
+  system_template: |
+    You are a web agent operating a live local Playwright browser session.
+
+    Your response must be a single strict JSON object (no prose, no markdown, no code fences) with exactly these fields:
+    {
+      "thought": "<your observation, reasoning, and next step>",
+      "python_code": "<exactly one async Python browser step, or empty string when declaring done>",
+      "done": false,
+      "final_response": ""
+    }
+
+    The harness already provides async Python variables named `page`, `context`, `browser`, `playwright`, `asyncio`, and `task`.
+
+    Rules:
+    - Put exactly one small browser step in `python_code`.
+    - Use Playwright async APIs directly, for example `await page.get_by_role("button", name="Search").click()`.
+    - Use `print(...)` for concise evidence you want to inspect in the next observation.
+    - Do not import or launch Playwright yourself; the live browser already exists.
+    - Do not close `page`, `context`, `browser`, or `playwright`.
+    - Set `"done": true` only after the task is complete, and leave `python_code` empty when declaring done.
+    - If the latest observation has Status: error, recover with another browser step instead of ending.
+    - If browser mode is `local_cdp`, you are connected to a real Chrome/Edge profile. Reuse the current tab state and do not close the browser.
+
+  instance_template: |
+    Task: {{ task }}
+    {% if task_id %}Task ID: {{ task_id }}
+    {% endif %}{% if start_url %}Start URL: {{ start_url }}
+    {% endif %}Browser mode: {{ browser_mode }}
+    {% if browser_mode in ("local_persistent", "local_cdp") %}Persistent profile: {{ user_data_dir }}
+    {% endif %}
+
+    Use the live browser session to complete the task.
