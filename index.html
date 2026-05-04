@@ -404,8 +404,126 @@
       margin-top: 28px;
     }
 
+    .plots-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .plot-card {
+      margin: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .plot-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .plot-card figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .plots-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .metric {
       padding: 18px;
+    }
+
+    .metric-clickable {
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .metric-clickable:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 6px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    .metric-clickable::after {
+      content: "↗";
+      float: right;
+      margin-top: -4px;
+      color: var(--muted);
+      font-size: 14px;
+      opacity: 0.6;
+    }
+
+    .plot-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 1000;
+    }
+
+    .plot-modal.is-open {
+      display: flex;
+    }
+
+    .plot-modal-card {
+      position: relative;
+      width: min(960px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #ffffff;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+      padding: 22px 22px 26px;
+    }
+
+    .plot-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .plot-modal-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .plot-modal-close {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--muted);
+    }
+
+    .plot-modal-close:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .plot-modal-body img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .metric strong {
@@ -707,6 +825,22 @@
       gap: 12px;
     }
 
+    .footer-links {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .footer-links a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .footer-links a:hover {
+      border-bottom-color: var(--ink);
+    }
+
     @media (max-width: 980px) {
       .hero-stats,
       .principles,
@@ -802,6 +936,8 @@
       <a href="#showcase">Showcase</a>
       <a href="#architecture">Harness</a>
       <a href="#results">Results</a>
+      <a href="https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/" target="_blank" rel="noopener">Blog</a>
+      <a href="https://github.com/microsoft/Webwright" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </header>
 
@@ -819,6 +955,8 @@
         <div class="hero-actions">
           <a class="button" href="#architecture">How it works</a>
           <a class="button secondary" href="#showcase">Watch the trace</a>
+          <a class="button secondary" href="https://github.com/microsoft/Webwright" target="_blank" rel="noopener">GitHub</a>
+          <a class="button secondary" href="https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/" target="_blank" rel="noopener">Microsoft Research Blog</a>
         </div>
         <div class="hero-stats" aria-label="Webwright headline results">
           <div class="hero-stat">
@@ -844,7 +982,7 @@
     <section id="approach" class="approach">
       <div class="section-inner">
         <p class="section-kicker">Paradigm shift</p>
-        <h2 class="section-title">The browser is not the agent workspace. The terminal is.</h2>
+        <h2 class="section-title">In Webwright, agent can launch multiple browser sessions in terminal.</h2>
         <p class="section-copy">
           Traditional web agents keep one browser session alive and predict the next click, type, or scroll. Webwright separates the agent from that session: the browser can be launched, inspected, and discarded, while code, logs, screenshots, and outputs persist in the local workspace.
         </p>
@@ -1029,18 +1167,28 @@ self_reflect_result.json</pre>
         <p class="section-copy">
           The report evaluates Webwright on live, long-horizon web benchmarks while preserving the simple terminal interface. The same pipeline also records critical-point screenshots, action logs, and reusable command-line tools.
         </p>
+        <div class="plots-row">
+          <figure class="plot-card">
+            <img src="assets/plot_odysseys.svg" alt="Odysseys long-horizon score plot">
+            <figcaption>Odysseys — long-horizon browsing</figcaption>
+          </figure>
+          <figure class="plot-card">
+            <img src="assets/plot_om2w.svg" alt="Online-Mind2Web accuracy plot">
+            <figcaption>Online-Mind2Web — accuracy on 300 live tasks</figcaption>
+          </figure>
+        </div>
         <div class="metrics-grid">
-          <article class="metric">
-            <strong>86.7%</strong>
-            <h3>Online-Mind2Web</h3>
-            <p>GPT-5.4 accuracy on 300 live tasks across 136 sites with a 100-step budget.</p>
-          </article>
           <article class="metric">
             <strong>60.1%</strong>
             <h3>Odysseys</h3>
             <p>Long-horizon browsing score, a 35.1% relative improvement over the previous reported SOTA.</p>
           </article>
           <article class="metric">
+            <strong>86.7%</strong>
+            <h3>Online-Mind2Web</h3>
+            <p>GPT-5.4 accuracy on 300 live tasks across 136 sites with a 100-step budget.</p>
+          </article>
+          <article class="metric metric-clickable" data-plot="assets/plot_cost.svg" data-plot-title="Average cost per task">
             <strong>$2.37</strong>
             <h3>Average cost</h3>
             <p>Average GPT-5.4 cost per Online-Mind2Web task in the report's cost analysis.</p>
@@ -1056,9 +1204,24 @@ self_reflect_result.json</pre>
 
   </main>
 
+  <div class="plot-modal" id="plotModal" role="dialog" aria-modal="true" aria-labelledby="plotModalTitle" aria-hidden="true">
+    <div class="plot-modal-card" role="document">
+      <div class="plot-modal-header">
+        <h3 class="plot-modal-title" id="plotModalTitle">Plot</h3>
+        <button class="plot-modal-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="plot-modal-body" id="plotModalBody"></div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="section-inner footer-row">
       <span>Webwright: A terminal-native harness for web agents.</span>
+      <span class="footer-links">
+        <a href="https://github.com/microsoft/Webwright" target="_blank" rel="noopener">GitHub</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/" target="_blank" rel="noopener">Microsoft Research blog</a>
+      </span>
     </div>
   </footer>
 
@@ -1141,6 +1304,47 @@ self_reflect_result.json</pre>
     if (demos[initialDemo]) {
       activateDemo(initialDemo, false);
     }
+
+    // Metric plot modal
+    const plotModal = document.getElementById("plotModal");
+    const plotModalTitle = document.getElementById("plotModalTitle");
+    const plotModalBody = document.getElementById("plotModalBody");
+    const plotModalClose = plotModal.querySelector(".plot-modal-close");
+
+    function openPlotModal(src, title) {
+      plotModalTitle.textContent = title || "Plot";
+      plotModalBody.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = title || "Plot";
+      plotModalBody.appendChild(img);
+      plotModal.classList.add("is-open");
+      plotModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closePlotModal() {
+      plotModal.classList.remove("is-open");
+      plotModal.setAttribute("aria-hidden", "true");
+      plotModalBody.innerHTML = "";
+    }
+
+    document.querySelectorAll(".metric-clickable").forEach((el) => {
+      el.addEventListener("click", () => {
+        const src = el.getAttribute("data-plot");
+        const title = el.getAttribute("data-plot-title");
+        if (src) openPlotModal(src, title);
+      });
+    });
+
+    plotModalClose.addEventListener("click", closePlotModal);
+    plotModal.addEventListener("click", (e) => {
+      if (e.target === plotModal) closePlotModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && plotModal.classList.contains("is-open")) {
+        closePlotModal();
+      }
+    });
   </script>
 </body>
 </html>
