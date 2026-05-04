@@ -1,6 +1,8 @@
 # webwright
 
-A tiny SWE-style web agent harness. It drives a Playwright browser through a minimal prompt/observe/act loop with pluggable LLM backends.
+A tiny SWE-style web agent harness. It drives a Playwright browser through a minimal agent loop with pluggable LLM backends.
+
+Lightweight by design. With the core agent loop in a single ~450-line file and the Playwright environment in ~570 lines. The CLI is ~150 lines, model backends (OpenAI, Anthropic, OpenRouter) are ~150–200 lines each, and there are zero hidden frameworks — just httpx, pydantic, playwright, and typer. No multi-agent, no graph engine, no plugin system, no orchestration layer: a flat prompt → observe → act loop you can read end-to-end in one sitting. If you want a minimal, easy to debug starting point for browser-using agents instead of another heavyweight platform, this is it!
 
 ## Project map
 
@@ -46,6 +48,9 @@ Flags:
 - `--start-url` — initial page.
 - `--task-id` — output subfolder name.
 - `-o` — output directory.
+
+## Give back to the accessibility community
+web-agent research is now benefiting from infrastructure originally designed for accessibility. Accessibility trees, ARIA metadata, and semantic page representations help assistive technologies expose web content to people with disabilities; today, the same signals also give LLM agents a machine-readable view of pages beyond pixels. As builders, we have a responsibility to bring these advances back to the accessibility community. Webwright could support everyday assistive workflows such as forms, appointments, transportation, and service comparison, while also acting as a repair layer for the web itself: inspecting pages, detecting missing labels, confusing controls, broken navigation, or inaccessible forms, and generating reusable scripts or overlays that make sites easier to understand and operate. We encourage developers to propose ideas of using Webwright to help move us closer to a more accessible and useful web for everyone. 
 
 ## Credits
 

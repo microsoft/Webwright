@@ -14,7 +14,7 @@ from webwright.models import get_model
 from webwright.utils.serialize import UNSET, recursive_merge
 
 
-DEFAULT_CONFIG = "best_default_judge_json_openai.yaml"
+DEFAULT_CONFIGS = ["base.yaml", "model_openai.yaml"]
 
 app = typer.Typer(no_args_is_help=True)
 console = Console(highlight=False)
@@ -38,7 +38,7 @@ def run_one(
     debug: bool = False,
     snapshot_config: bool = True,
 ) -> Any:
-    config_spec = config_spec or [DEFAULT_CONFIG]
+    config_spec = config_spec or DEFAULT_CONFIGS
     configs = [get_config_from_spec(spec) for spec in config_spec]
     config = recursive_merge(*configs)
 
@@ -136,7 +136,7 @@ def main(
     task: str = typer.Option(..., "-t", "--task", help="Natural language task description."),
     task_id: str | None = typer.Option(None, "--task-id", help="Optional identifier used in the output directory name."),
     start_url: str | None = typer.Option(None, "--start-url", help="Optional starting URL for the task."),
-    config_spec: list[str] = typer.Option([DEFAULT_CONFIG], "-c", "--config"),
+    config_spec: list[str] = typer.Option(DEFAULT_CONFIGS, "-c", "--config"),
     output_dir: Path | None = typer.Option(None, "-o", "--output-dir"),
     debug: bool = typer.Option(False, "--debug", help="Launch headed local Playwright with devtools and keep it open for inspection."),
 ) -> Any:
