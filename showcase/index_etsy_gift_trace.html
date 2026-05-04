@@ -1,0 +1,1829 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gift Package Trace Showcase</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --ink: #111827;
+      --muted: #5b6472;
+      --quiet: #8a94a6;
+      --line: #d9dee7;
+      --line-strong: #b8c0cc;
+      --accent: #245fce;
+      --accent-soft: #e7eefc;
+      --green: #0f766e;
+      --green-soft: #dff7ef;
+      --red: #b42318;
+      --red-soft: #fee4e2;
+      --amber: #a16207;
+      --amber-soft: #fef3c7;
+      --terminal: #0d1117;
+      --terminal-ink: #d6deeb;
+      --radius: 8px;
+      --shadow: 0 10px 28px rgba(17, 24, 39, 0.08), 0 2px 8px rgba(17, 24, 39, 0.05);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0)),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+      height: 100vh;
+      padding: 14px;
+    }
+
+    .topbar,
+    .sidebar,
+    .content-panel {
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .subtitle code,
+    .meta code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #eef2f7;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .segmented,
+    .controls {
+      display: inline-grid;
+      grid-auto-flow: column;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .segmented button,
+    .controls button {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .segmented button:last-child,
+    .controls button:last-child {
+      border-right: 0;
+    }
+
+    .segmented button:hover,
+    .controls button:hover {
+      background: var(--accent-soft);
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: var(--ink);
+      color: #ffffff;
+    }
+
+    .controls button:disabled {
+      color: var(--quiet);
+      cursor: not-allowed;
+      background: #f7f8fb;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .sidebar {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 2px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .steps {
+      margin: 0;
+      padding: 6px;
+      list-style: none;
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #c9d0dc transparent;
+    }
+
+    .step-button {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 8px;
+      width: 100%;
+      margin: 1px 0;
+      padding: 9px 10px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .step-button:hover {
+      border-color: var(--line);
+      background: #f8fafc;
+    }
+
+    .step-button.is-active {
+      border-color: rgba(36, 95, 206, 0.3);
+      background: var(--accent-soft);
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 24px;
+      border-radius: 6px;
+      background: #edf0f5;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .step-button.is-active .step-num {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .step-title {
+      overflow: hidden;
+      margin: 0;
+      color: var(--ink);
+      font-size: 12.5px;
+      font-weight: 750;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-subtitle {
+      display: -webkit-box;
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.35;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      border-top: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .content {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .mode-view {
+      display: none;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .mode-view.is-active {
+      display: grid;
+    }
+
+    .evolution {
+      grid-template-columns: minmax(250px, 0.72fr) minmax(0, 1.28fr);
+      gap: 12px;
+    }
+
+    .content-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 46px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfe;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .panel-header .small {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .scroll-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .workspace-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .change-list {
+      display: grid;
+      gap: 6px;
+      margin: 0 0 10px;
+    }
+
+    .change-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      min-width: 0;
+      padding: 6px 8px;
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .change-row span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .change-row.added {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .change-row.removed {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .change-row.neutral {
+      background: #eef2f7;
+      color: var(--muted);
+    }
+
+    .tree {
+      margin: 0;
+      padding: 0;
+      color: #223046;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.55;
+      list-style: none;
+    }
+
+    .tree ul {
+      margin: 0 0 0 16px;
+      padding: 0;
+      list-style: none;
+      border-left: 1px solid #e5e9f0;
+    }
+
+    .tree li {
+      min-width: 0;
+      padding-left: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .tree .dir {
+      color: #344054;
+      font-weight: 800;
+    }
+
+    .tree .file.added {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .scroll-body.detail-grid {
+      padding-bottom: 34px;
+    }
+
+    .scroll-body.detail-grid.terminal-detail-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      padding-bottom: 12px;
+    }
+
+    .terminal-detail-body .scrollable-block {
+      flex: 0 0 auto;
+    }
+
+    .terminal-detail-body .thought {
+      max-height: clamp(120px, 16vh, 190px);
+    }
+
+    .detail-block {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .detail-block.scrollable-block {
+      display: grid;
+      grid-template-rows: auto minmax(0, auto);
+      min-height: 0;
+    }
+
+    .detail-block h3 {
+      margin: 0;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .scrollable-content {
+      overflow-y: scroll;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      scrollbar-width: thin;
+      scrollbar-color: #aab3c1 transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scrollable-content::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .scrollable-content::-webkit-scrollbar-thumb {
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background: #aab3c1;
+      background-clip: content-box;
+    }
+
+    .scrollable-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .thought {
+      max-height: clamp(160px, 23vh, 280px);
+      margin: 0;
+      padding: 10px;
+      color: #263244;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .command {
+      max-height: clamp(190px, 31vh, 380px);
+      padding: 10px;
+      background: #f7f9fc;
+      color: #1f2937;
+    }
+
+    .terminal {
+      min-height: 0;
+      max-height: clamp(190px, 32vh, 420px);
+      padding: 11px;
+      background: var(--terminal);
+      color: var(--terminal-ink);
+    }
+
+    .trace-terminal {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      flex: 1 1 clamp(430px, 54vh, 680px);
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      border-color: #182338;
+      background: #0b1020;
+      color: var(--terminal-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .terminal-chrome {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 46px;
+      padding: 7px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      background:
+        linear-gradient(180deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.96)),
+        #111827;
+      color: #93a4bd;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .terminal-controls {
+      display: inline-flex;
+      gap: 5px;
+    }
+
+    .terminal-control {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #64748b;
+    }
+
+    .terminal-control.red {
+      background: #f87171;
+    }
+
+    .terminal-control.amber {
+      background: #fbbf24;
+    }
+
+    .terminal-control.green {
+      background: #34d399;
+    }
+
+    .terminal-title {
+      display: grid;
+      gap: 2px;
+      overflow: hidden;
+      line-height: 1.25;
+    }
+
+    .terminal-title b,
+    .terminal-title span,
+    .terminal-run-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .terminal-title b {
+      color: #e5edf8;
+      font-size: 11.5px;
+    }
+
+    .terminal-title span {
+      color: #8ea2bd;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .terminal-run-label {
+      justify-self: end;
+      padding: 4px 7px;
+      border: 1px solid rgba(110, 231, 183, 0.26);
+      border-radius: 6px;
+      background: rgba(6, 78, 59, 0.28);
+      color: #6ee7b7;
+    }
+
+    .terminal-screen {
+      display: block;
+      height: 100%;
+      min-height: 0;
+      padding: 14px;
+      overflow: auto;
+      background:
+        linear-gradient(180deg, rgba(36, 95, 206, 0.12), rgba(15, 118, 110, 0.04) 46%, transparent),
+        #0d1117;
+      color: var(--terminal-ink);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.58;
+    }
+
+    .terminal-stream {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .terminal-stream::after {
+      display: block;
+      height: 24px;
+      content: "";
+    }
+
+    .terminal-group {
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 7px;
+      background: rgba(2, 6, 23, 0.48);
+    }
+
+    .terminal-group:last-child {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    .terminal-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 32px;
+      padding: 0 11px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(15, 23, 42, 0.86);
+      color: #9fb0c9;
+      font-size: 10.5px;
+      font-weight: 850;
+    }
+
+    .terminal-label span:first-child {
+      color: #e2e8f0;
+    }
+
+    .terminal-label span:last-child {
+      color: #7f91ac;
+      font-size: 10px;
+    }
+
+    .terminal-command-block {
+      display: grid;
+      gap: 8px;
+      align-items: start;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.26);
+    }
+
+    .terminal-prompt {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 22px;
+      padding: 1px 7px;
+      border: 1px solid rgba(110, 231, 183, 0.18);
+      border-radius: 6px;
+      background: rgba(6, 78, 59, 0.22);
+      color: #6ee7b7;
+      white-space: nowrap;
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .terminal-path {
+      color: #93c5fd;
+    }
+
+    .terminal-symbol {
+      color: #facc15;
+    }
+
+    .terminal-code,
+    .terminal-output {
+      margin: 0;
+      min-width: 0;
+      max-width: 100%;
+      overflow: visible;
+      white-space: pre-wrap;
+      tab-size: 2;
+      overflow-wrap: anywhere;
+    }
+
+    .terminal-code {
+      color: #e5edf8;
+    }
+
+    .terminal-output {
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.28);
+      color: #cbd5e1;
+    }
+
+    .terminal-code code,
+    .terminal-output code {
+      font: inherit;
+      white-space: inherit;
+    }
+
+    .syntax-command {
+      color: #f8fafc;
+      font-weight: 850;
+    }
+
+    .syntax-keyword {
+      color: #c4b5fd;
+      font-weight: 800;
+    }
+
+    .syntax-flag,
+    .syntax-json-key {
+      color: #93c5fd;
+    }
+
+    .syntax-string {
+      color: #a7f3d0;
+    }
+
+    .syntax-path {
+      color: #facc15;
+    }
+
+    .syntax-comment {
+      color: #7f91ac;
+      font-style: italic;
+    }
+
+    .syntax-json-value {
+      color: #fbbf24;
+    }
+
+    .terminal-empty {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .pill.ok {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .pill.warn {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .status-pill {
+      text-transform: uppercase;
+    }
+
+    .final-run {
+      grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .screenshot-stage {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      min-height: 0;
+      padding: 12px;
+      gap: 10px;
+      background: #f8fafc;
+    }
+
+    .screenshot-frame {
+      display: grid;
+      place-items: center;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #111827;
+    }
+
+    .screenshot-frame img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .run-switcher {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+    }
+
+    .run-switcher button {
+      min-height: 30px;
+      padding: 0 9px;
+      border: 0;
+      background: #ffffff;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .run-switcher button[aria-pressed="true"] {
+      background: var(--ink);
+      color: #ffffff;
+    }
+
+    .thumb {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--muted);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .thumb[aria-pressed="true"] {
+      border-color: rgba(36, 95, 206, 0.45);
+      background: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    .thumb img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 5px;
+      background: #111827;
+    }
+
+    .thumb span {
+      overflow: hidden;
+      font-size: 11px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .log-panel {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .final-response {
+      max-height: clamp(130px, 20vh, 260px);
+      margin: 0;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--amber-soft);
+      color: #4f3a08;
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .judge-summary {
+      min-width: 0;
+      margin: 0;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--green-soft);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .judge-summary.empty {
+      background: #eef2f7;
+      color: var(--muted);
+    }
+
+    .evidence-scroll {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 0;
+      max-height: calc(100vh - 188px);
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .evidence-section {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .evidence-section.scrollable-section {
+      display: grid;
+      grid-template-rows: auto minmax(0, auto);
+      min-height: 0;
+    }
+
+    .evidence-body {
+      max-height: clamp(190px, 30vh, 360px);
+      min-height: 0;
+      background: #ffffff;
+    }
+
+    .evidence-section h3 {
+      margin: 0;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .action-list,
+    .judge-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 10px;
+      list-style: none;
+    }
+
+    .action-list li,
+    .judge-list li {
+      min-width: 0;
+      padding: 8px 9px;
+      border: 1px solid #eef2f7;
+      border-radius: 6px;
+      background: #fbfcfe;
+      color: #263244;
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .action-list b,
+    .judge-list b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+    }
+
+    .log {
+      min-height: 0;
+      padding: 11px;
+      overflow: auto;
+      background: var(--terminal);
+      color: var(--terminal-ink);
+    }
+
+    .link {
+      color: var(--accent);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1100px) {
+      .main,
+      .evolution,
+      .final-run {
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 10px;
+      }
+
+      .topbar,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .segmented,
+      .controls {
+        grid-auto-flow: row;
+      }
+
+      .segmented button,
+      .controls button {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .segmented button:last-child,
+      .controls button:last-child {
+        border-bottom: 0;
+      }
+
+      .workspace-stats,
+      .thumbs {
+        grid-template-columns: 1fr;
+      }
+
+      .terminal-chrome {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .terminal-run-label {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Webwright Showcase</p>
+        <h1>Gift Package Trace Showcase</h1>
+        <p class="subtitle">The browser is disposable; the workspace is the agent's memory. Each step shows files created while the agent solves the web task through terminal commands.</p>
+      </div>
+
+      <div class="toolbar" aria-label="Showcase controls">
+        <div class="segmented" aria-label="Showcase section">
+          <button id="modeEvolution" type="button" aria-pressed="true">Part 1: evolution</button>
+          <button id="modeFinal" type="button" aria-pressed="false">Part 2: final run</button>
+        </div>
+        <div class="controls" aria-label="Step controls">
+          <button id="prevStep" type="button">Prev</button>
+          <button id="playSteps" type="button">Play</button>
+          <button id="nextStep" type="button">Next</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="main">
+      <aside class="sidebar" aria-label="Trace steps">
+        <header class="sidebar-header">
+          <h2>LLM step timeline</h2>
+          <div class="meta">
+            <span class="chip" id="stepCount">0 steps</span>
+            <span class="chip" id="filePeak">0 files</span>
+            <span class="chip" id="snapshotCap">snapshot cap --</span>
+            <span class="chip">manual playback</span>
+          </div>
+        </header>
+        <ol class="steps" id="stepsList"></ol>
+        <footer class="sidebar-footer">
+          <span id="activeStepLabel">Step --</span>
+          <span id="playState">Paused</span>
+        </footer>
+      </aside>
+
+      <section class="content" aria-label="Trace detail">
+        <div class="mode-view evolution is-active" id="evolutionView">
+          <article class="content-panel">
+            <header class="panel-header">
+              <h2>Workspace evolution</h2>
+              <span class="small" id="workspaceSource">workspace_files</span>
+            </header>
+            <div class="scroll-body">
+              <div class="workspace-stats">
+                <div class="stat"><b id="fileCount">0</b><span>seen total</span></div>
+                <div class="stat"><b id="snapshotCount">0</b><span>snapshot</span></div>
+                <div class="stat"><b id="addedCount">0</b><span>new files</span></div>
+              </div>
+              <div class="change-list" id="changeList"></div>
+              <ul class="tree" id="workspaceTree"></ul>
+            </div>
+          </article>
+
+          <article class="content-panel">
+            <header class="panel-header">
+              <h2>Thought, command, output</h2>
+              <span class="pill status-pill" id="stepStatus">status: --</span>
+            </header>
+            <div class="scroll-body detail-grid terminal-detail-body">
+              <div class="detail-block scrollable-block">
+                <h3>LLM Thought</h3>
+                <p class="thought scrollable-content" id="thoughtText"></p>
+              </div>
+
+              <div class="detail-block scrollable-block" id="stepFinalBlock">
+                <h3>Final Response</h3>
+                <p class="thought scrollable-content" id="stepFinalText"></p>
+              </div>
+
+              <div class="detail-block trace-terminal">
+                <div class="terminal-chrome">
+                  <span class="terminal-controls" aria-hidden="true">
+                    <span class="terminal-control red"></span>
+                    <span class="terminal-control amber"></span>
+                    <span class="terminal-control green"></span>
+                  </span>
+                  <span class="terminal-title">
+                    <b>Command transcript</b>
+                    <span>generated command -> command_output</span>
+                  </span>
+                  <span class="terminal-run-label" id="terminalRunLabel">step --</span>
+                </div>
+                <div class="terminal-screen scrollable-content" id="terminalSession"></div>
+              </div>
+
+            </div>
+          </article>
+        </div>
+
+        <div class="mode-view final-run" id="finalView">
+          <article class="content-panel">
+            <header class="panel-header">
+              <h2>Final execution screenshots</h2>
+              <div class="run-switcher" id="runSwitcher" aria-label="Final run selector"></div>
+            </header>
+            <div class="screenshot-stage">
+              <div class="screenshot-frame">
+                <img id="mainShot" alt="Final script execution screenshot">
+              </div>
+              <span class="small" id="shotLabel">screenshot --</span>
+              <div class="thumbs" id="thumbs"></div>
+            </div>
+          </article>
+
+          <article class="content-panel">
+            <header class="panel-header">
+              <h2>Run evidence</h2>
+              <span>
+                <a class="link" id="logLink" href="#" target="_blank" rel="noreferrer">open log</a>
+                <span class="small"> · </span>
+                <a class="link" id="judgeLink" href="#" target="_blank" rel="noreferrer">open self-reflection</a>
+              </span>
+            </header>
+            <div class="evidence-scroll">
+              <section class="evidence-section scrollable-section">
+                <h3>Final Response</h3>
+                <p class="final-response scrollable-content" id="finalResponse"></p>
+              </section>
+              <section class="evidence-section scrollable-section">
+                <h3>final_script_log.txt actions</h3>
+                <div class="evidence-body scrollable-content">
+                  <ol class="action-list" id="finalActions"></ol>
+                </div>
+              </section>
+              <section class="evidence-section scrollable-section" id="imageQaSection">
+                <h3>Image QA Rerun Decision</h3>
+                <div class="evidence-body scrollable-content">
+                  <p class="judge-summary empty" id="imageQaSummary"></p>
+                  <ol class="judge-list" id="imageQaDetails"></ol>
+                </div>
+              </section>
+              <section class="evidence-section scrollable-section" id="judgeSection">
+                <h3>Self-Reflection Response</h3>
+                <div class="evidence-body scrollable-content">
+                  <p class="judge-summary empty" id="judgeSummary"></p>
+                  <ol class="judge-list" id="judgeChecks"></ol>
+                </div>
+              </section>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="etsy_gift_trace/trace_data.js"></script>
+  <script>
+    const data = window.TRACE_DATA;
+    const steps = data.steps;
+    let activeIndex = 0;
+    let activeRunIndex = data.defaultFinalRunIndex || 0;
+    let activeShotIndex = 0;
+    let mode = "evolution";
+    let timer = null;
+
+    const els = {
+      stepCount: document.getElementById("stepCount"),
+      filePeak: document.getElementById("filePeak"),
+      snapshotCap: document.getElementById("snapshotCap"),
+      stepsList: document.getElementById("stepsList"),
+      activeStepLabel: document.getElementById("activeStepLabel"),
+      playState: document.getElementById("playState"),
+      modeEvolution: document.getElementById("modeEvolution"),
+      modeFinal: document.getElementById("modeFinal"),
+      prevStep: document.getElementById("prevStep"),
+      playSteps: document.getElementById("playSteps"),
+      nextStep: document.getElementById("nextStep"),
+      evolutionView: document.getElementById("evolutionView"),
+      finalView: document.getElementById("finalView"),
+      workspaceSource: document.getElementById("workspaceSource"),
+      fileCount: document.getElementById("fileCount"),
+      snapshotCount: document.getElementById("snapshotCount"),
+      addedCount: document.getElementById("addedCount"),
+      changeList: document.getElementById("changeList"),
+      workspaceTree: document.getElementById("workspaceTree"),
+      stepStatus: document.getElementById("stepStatus"),
+      thoughtText: document.getElementById("thoughtText"),
+      stepFinalBlock: document.getElementById("stepFinalBlock"),
+      stepFinalText: document.getElementById("stepFinalText"),
+      terminalSession: document.getElementById("terminalSession"),
+      terminalRunLabel: document.getElementById("terminalRunLabel"),
+      runSwitcher: document.getElementById("runSwitcher"),
+      mainShot: document.getElementById("mainShot"),
+      thumbs: document.getElementById("thumbs"),
+      shotLabel: document.getElementById("shotLabel"),
+      finalResponse: document.getElementById("finalResponse"),
+      finalActions: document.getElementById("finalActions"),
+      logLink: document.getElementById("logLink"),
+      imageQaSection: document.getElementById("imageQaSection"),
+      imageQaSummary: document.getElementById("imageQaSummary"),
+      imageQaDetails: document.getElementById("imageQaDetails"),
+      judgeSection: document.getElementById("judgeSection"),
+      judgeSummary: document.getElementById("judgeSummary"),
+      judgeChecks: document.getElementById("judgeChecks"),
+      judgeLink: document.getElementById("judgeLink")
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function highlightBash(value) {
+      const commandWords = "cd|ls|cat|echo|python|python3|node|npm|npx|mkdir|touch|cp|mv|rm|sed|awk|rg|grep|curl|wget|playwright|pytest|true|false";
+      const shellKeywords = "if|then|else|elif|fi|for|while|do|done|case|esac|in|export|function";
+      const tokenPattern = new RegExp(
+        `(&quot;[^\\n]*?&quot;|'[^\\n]*?'|#[^\\n]*|--?[\\w-]+|\\b(?:${commandWords})\\b|\\b(?:${shellKeywords})\\b|(?:\\.\\.?/|RELEASE_WORKSPACE|[\\w.-]+/)[^\\s;&|()]+)`,
+        "g"
+      );
+
+      return escapeHtml(value).replace(tokenPattern, (token) => {
+        if (token.startsWith("#")) return `<span class="syntax-comment">${token}</span>`;
+        if (token.startsWith("&quot;") || token.startsWith("'")) return `<span class="syntax-string">${token}</span>`;
+        if (/^--?[\w-]+$/.test(token)) return `<span class="syntax-flag">${token}</span>`;
+        if (new RegExp(`^(?:${commandWords})$`).test(token)) return `<span class="syntax-command">${token}</span>`;
+        if (new RegExp(`^(?:${shellKeywords})$`).test(token)) return `<span class="syntax-keyword">${token}</span>`;
+        return `<span class="syntax-path">${token}</span>`;
+      });
+    }
+
+    function highlightJson(value) {
+      return escapeHtml(value).replace(/(&quot;[^&]*?&quot;)(\s*:)?|\b(true|false|null)\b|-?\b\d+(?:\.\d+)?\b/g, (match, stringToken, colon) => {
+        if (stringToken) {
+          const cls = colon ? "syntax-json-key" : "syntax-string";
+          return `<span class="${cls}">${stringToken}</span>${colon || ""}`;
+        }
+        return `<span class="syntax-json-value">${match}</span>`;
+      });
+    }
+
+    function renderCommandCode(value) {
+      return highlightBash(value);
+    }
+
+    function renderTerminalOutput(value) {
+      const text = String(value || "").trim();
+      if (!text) return escapeHtml(value);
+
+      try {
+        return highlightJson(JSON.stringify(JSON.parse(text), null, 2));
+      } catch (error) {
+        return escapeHtml(value).replace(/(^|\n)(---[^\n]+---)/g, `$1<span class="syntax-keyword">$2</span>`);
+      }
+    }
+
+    function compact(value, fallback = "--") {
+      const text = String(value || "").trim();
+      return text || fallback;
+    }
+
+    function truncate(value, limit = 520) {
+      const text = String(value || "").trim();
+      if (text.length <= limit) return text;
+      return `${text.slice(0, limit).trim()} ...`;
+    }
+
+    function commandSummary(command) {
+      const text = compact(command, "No command in this step");
+      return text.split("\n").find(Boolean).slice(0, 120);
+    }
+
+    function thoughtSummary(thought) {
+      return compact(thought, "Completion declaration step").slice(0, 150);
+    }
+
+    function buildTree(files) {
+      const root = { dirs: new Map(), files: [] };
+
+      files.forEach((filePath) => {
+        const parts = filePath.split("/").filter(Boolean);
+        let node = root;
+        parts.forEach((part, index) => {
+          if (index === parts.length - 1) {
+            node.files.push(part);
+          } else {
+            if (!node.dirs.has(part)) {
+              node.dirs.set(part, { dirs: new Map(), files: [] });
+            }
+            node = node.dirs.get(part);
+          }
+        });
+      });
+
+      return root;
+    }
+
+    function renderTree(node, prefix, addedSet) {
+      const dirs = Array.from(node.dirs.entries()).sort(([a], [b]) => a.localeCompare(b));
+      const files = node.files.slice().sort((a, b) => a.localeCompare(b));
+      const dirHtml = dirs.map(([name, child]) => {
+        const childPrefix = prefix ? `${prefix}/${name}` : name;
+        return `<li><span class="dir">${escapeHtml(name)}/</span><ul>${renderTree(child, childPrefix, addedSet)}</ul></li>`;
+      }).join("");
+      const fileHtml = files.map((name) => {
+        const fullPath = prefix ? `${prefix}/${name}` : name;
+        const added = addedSet.has(fullPath) ? " added" : "";
+        return `<li><span class="file${added}">${escapeHtml(name)}</span></li>`;
+      }).join("");
+      return dirHtml + fileHtml;
+    }
+
+    function renderStepList() {
+      els.stepsList.innerHTML = steps.map((step, index) => `
+        <li>
+          <button class="step-button" type="button" data-index="${index}" aria-label="Show step ${step.step}">
+            <span class="step-num">${String(step.step).padStart(2, "0")}</span>
+            <span>
+              <p class="step-title">${escapeHtml(commandSummary(step.generatedCode || step.command))}</p>
+              <span class="step-subtitle">${escapeHtml(thoughtSummary(step.thought))}</span>
+            </span>
+          </button>
+        </li>
+      `).join("");
+
+      els.stepsList.querySelectorAll(".step-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          stopPlayback();
+          setMode("evolution");
+          setStep(Number(button.dataset.index));
+        });
+      });
+    }
+
+    function renderChanges(step) {
+      const added = step.newFiles || [];
+      const omitted = step.omittedFromSnapshot || [];
+      if (!step.hasWorkspaceSnapshot) {
+        return `<div class="change-row neutral"><b>held</b><span>No new workspace_files snapshot on this final declaration step; showing the cumulative tree.</span></div>`;
+      }
+      if (!added.length) {
+        const note = omitted.length
+          ? `${omitted.length} paths are absent from this snapshot; this UI does not treat that as deletion.`
+          : "No newly seen file paths in this snapshot.";
+        return `<div class="change-row neutral"><b>same</b><span>${escapeHtml(note)}</span></div>`;
+      }
+      const rows = [];
+      added.slice(0, 8).forEach((file) => {
+        rows.push(`<div class="change-row added"><b>new</b><span>${escapeHtml(file)}</span></div>`);
+      });
+      if (added.length > 8) {
+        rows.push(`<div class="change-row added"><b>new</b><span>${added.length - 8} more files</span></div>`);
+      }
+      if (omitted.length) {
+        rows.push(`<div class="change-row neutral"><b>note</b><span>${omitted.length} earlier paths are absent from this snapshot, but kept in the cumulative tree.</span></div>`);
+      }
+      return rows.join("");
+    }
+
+    function stepStatus(step) {
+      if (step.success === true) return { text: "success", cls: "ok" };
+      if (step.success === false) return { text: "failed", cls: "warn" };
+      return { text: "not recorded", cls: "warn" };
+    }
+
+    function terminalCommandBlocks(step) {
+      const generated = String(step.generatedCode || step.commandText || "").trim();
+      const command = String(step.command || step.bashCommand || "").trim();
+      const blocks = [];
+      if (generated) {
+        blocks.push({ label: "Generated Command", value: generated });
+      }
+      if (command && command !== generated) {
+        blocks.push({ label: "bash command", value: command });
+      }
+      if (!blocks.length) {
+        blocks.push({
+          label: "Generated Command",
+          value: "No generated command was recorded for this final declaration step.",
+          empty: true
+        });
+      }
+      return blocks;
+    }
+
+    function renderTerminalSession(step) {
+      const rawBlocks = terminalCommandBlocks(step);
+      const outputText = compact(step.commandOutput, "No command_output was captured for this step.");
+      const outputEmpty = !String(step.commandOutput || "").trim();
+      const commandBlocks = rawBlocks.map((block) => {
+        const blockMeta = block.label === "Generated Command" ? "model action" : "executed in workspace";
+        return `
+        <div class="terminal-group">
+          <div class="terminal-label">
+            <span>${escapeHtml(block.label)}</span>
+            <span>${escapeHtml(block.empty ? "empty" : blockMeta)}</span>
+          </div>
+          <div class="terminal-command-block">
+            ${block.empty ? "" : `<span class="terminal-prompt">
+              <span>agent</span><span class="terminal-path">RELEASE_WORKSPACE</span><span class="terminal-symbol">$</span>
+            </span>`}
+            <pre class="terminal-code${block.empty ? " terminal-empty" : ""}"><code>${block.empty ? escapeHtml(block.value) : renderCommandCode(block.value)}</code></pre>
+          </div>
+        </div>
+      `;
+      }).join("");
+
+      return `
+        <div class="terminal-stream">
+          ${commandBlocks}
+          <div class="terminal-group">
+            <div class="terminal-label">
+              <span>command_output</span>
+              <span>${escapeHtml(outputEmpty ? "empty" : "stdout / stderr")}</span>
+            </div>
+            <pre class="terminal-output${outputEmpty ? " terminal-empty" : ""}"><code>${outputEmpty ? escapeHtml(outputText) : renderTerminalOutput(outputText)}</code></pre>
+          </div>
+        </div>
+      `;
+    }
+
+    function setStep(index) {
+      activeIndex = Math.max(0, Math.min(index, steps.length - 1));
+      const step = steps[activeIndex];
+      const addedSet = new Set(step.newFiles || []);
+      const tree = buildTree(step.cumulativeFiles || []);
+
+      els.fileCount.textContent = String((step.cumulativeFiles || []).length);
+      els.snapshotCount.textContent = String((step.snapshotFiles || []).length);
+      els.addedCount.textContent = String((step.newFiles || []).length);
+      els.changeList.innerHTML = renderChanges(step);
+      els.workspaceTree.innerHTML = renderTree(tree, "", addedSet);
+      els.workspaceSource.textContent = step.hasWorkspaceSnapshot ? "cumulative workspace_files view" : "held cumulative view";
+
+      const status = stepStatus(step);
+      els.stepStatus.textContent = `status: ${status.text}`;
+      els.stepStatus.className = `pill status-pill ${status.cls}`;
+      els.thoughtText.textContent = compact(step.thought, "No thought text recorded for this step.");
+      const hasStepFinal = Boolean((step.finalResponse || "").trim());
+      els.stepFinalBlock.style.display = hasStepFinal ? "block" : "none";
+      els.stepFinalText.textContent = compact(step.finalResponse, "");
+      els.terminalSession.innerHTML = renderTerminalSession(step);
+      els.terminalSession.scrollTop = 0;
+      els.terminalSession.scrollLeft = 0;
+      els.terminalRunLabel.textContent = `step ${step.step}`;
+      els.activeStepLabel.textContent = `Step ${step.step} / ${steps[steps.length - 1].step}`;
+
+      els.stepsList.querySelectorAll(".step-button").forEach((button, i) => {
+        button.classList.toggle("is-active", i === activeIndex);
+        if (i === activeIndex) {
+          button.scrollIntoView({ block: "nearest" });
+        }
+      });
+
+      els.prevStep.disabled = activeIndex === 0;
+      els.nextStep.disabled = activeIndex === steps.length - 1;
+    }
+
+    function renderRunSwitcher() {
+      els.runSwitcher.innerHTML = data.finalRuns.map((run, index) => `
+        <button type="button" data-index="${index}" aria-pressed="false">
+          ${escapeHtml(run.id)}${run.verified ? " verified" : ""}
+        </button>
+      `).join("");
+      els.runSwitcher.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => setFinalRun(Number(button.dataset.index)));
+      });
+    }
+
+    function parseFinalActions(logText) {
+      const actions = [];
+      let final = "";
+      const log = String(logText || "");
+      const markerIndex = log.indexOf("Final Response:");
+      const actionText = markerIndex >= 0 ? log.slice(0, markerIndex) : log;
+      if (markerIndex >= 0) {
+        final = log.slice(markerIndex + "Final Response:".length).replace(/\s+/g, " ").trim();
+      }
+      actionText.split("\n").forEach((line) => {
+        const action = line.match(/^step\s+(\d+)\s+action:\s+(.*)$/);
+        if (action) {
+          actions.push({ step: action[1], text: action[2] });
+        }
+      });
+      return { actions, final };
+    }
+
+    function parseJudge(run) {
+      if (!run.judgeResultText) return null;
+      try {
+        const judge = JSON.parse(run.judgeResultText);
+        const final = judge.final_response || "";
+        const status = (final.match(/Status:\s*(\w+)/i) || [])[1] || run.judgeStatus || "unknown";
+        const checks = [];
+        const body = final.replace(/^Thoughts:\s*/i, "").replace(/\n?Status:\s*\w+\s*$/i, "").trim();
+        body.split(/\n(?=\d+\.\s)/).forEach((chunk) => {
+          const text = chunk.trim();
+          if (text) checks.push(text.replace(/\s+/g, " "));
+        });
+        return {
+          model: judge.model || "",
+          predictedLabel: judge.predicted_label,
+          status,
+          checks
+        };
+      } catch (error) {
+        return {
+          model: "",
+          predictedLabel: run.judgePredictedLabel,
+          status: run.judgeStatus || "unknown",
+          checks: ["Self-reflection result exists but could not be parsed as JSON."]
+        };
+      }
+    }
+
+    function parseImageQaStep(step) {
+      try {
+        const parsed = JSON.parse(step.commandOutput || "");
+        if (!parsed || !parsed.answer || !Array.isArray(parsed.image_paths)) return null;
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function findImageQaDecision(run) {
+      const runScreenshots = `final_runs/${run.id}/screenshots/`;
+      for (let index = steps.length - 1; index >= 0; index -= 1) {
+        const step = steps[index];
+        const commandText = `${step.generatedCode || ""}\n${step.command || ""}`;
+        const outputText = step.commandOutput || "";
+        if (!commandText.includes("image_qa") || !outputText.includes(runScreenshots)) continue;
+        const parsed = parseImageQaStep(step);
+        if (!parsed) continue;
+        const nextThought = steps[index + 1]?.thought || "";
+        return {
+          step: step.step,
+          question: parsed.question || "",
+          answer: parsed.answer || "",
+          evidence: parsed.evidence || [],
+          confidence: parsed.confidence,
+          nextThought
+        };
+      }
+      return null;
+    }
+
+    function renderFinalRun() {
+      const run = data.finalRuns[activeRunIndex];
+      const parsedLog = parseFinalActions(run.logText);
+      const finalText = run.finalResponse || parsedLog.final || "No final response captured.";
+      els.finalResponse.textContent = finalText === "No final response captured." ? finalText : `Final Response: ${finalText}`;
+      els.finalActions.innerHTML = parsedLog.actions.length
+        ? parsedLog.actions.map((item) => `<li><b>step ${escapeHtml(item.step)}</b>${escapeHtml(truncate(item.text, 520))}</li>`).join("")
+        : '<li><b>log</b>No step action lines were found in final_script_log.txt.</li>';
+      els.logLink.href = run.logHref;
+      const hasJudge = Boolean(run.judgeResultText);
+      const judge = parseJudge(run);
+      const imageQa = hasJudge ? null : findImageQaDecision(run);
+
+      els.imageQaSection.style.display = imageQa ? "grid" : "none";
+      els.judgeSection.style.display = hasJudge ? "grid" : "none";
+
+      if (imageQa) {
+        const confidence = imageQa.confidence === undefined ? "--" : imageQa.confidence;
+        els.imageQaSummary.textContent = `${run.id}: image_qa step ${imageQa.step}; confidence=${confidence}; rerun required for stronger USPS currently-for-sale evidence`;
+        const rows = [
+          `<li><b>question</b>${escapeHtml(imageQa.question)}</li>`,
+          `<li><b>answer</b>${escapeHtml(imageQa.answer)}</li>`
+        ];
+        if (imageQa.nextThought) {
+          rows.push(`<li><b>next decision</b>${escapeHtml(imageQa.nextThought)}</li>`);
+        }
+        if (imageQa.evidence.length) {
+          rows.push(...imageQa.evidence.map((item) => `<li><b>evidence</b>${escapeHtml(item)}</li>`));
+        }
+        els.imageQaDetails.innerHTML = rows.join("");
+      } else {
+        els.imageQaSummary.textContent = "";
+        els.imageQaDetails.innerHTML = "";
+      }
+
+      if (hasJudge && judge) {
+        els.judgeSummary.textContent = `${run.id}: ${judge.status}; predicted_label=${judge.predictedLabel}; model=${judge.model || "--"}`;
+        els.judgeSummary.classList.remove("empty");
+        els.judgeChecks.innerHTML = judge.checks.length
+          ? judge.checks.map((check) => `<li>${escapeHtml(check)}</li>`).join("")
+          : '<li>No self-reflection response checks are available for this run.</li>';
+      } else {
+        els.judgeSummary.textContent = "";
+        els.judgeSummary.classList.add("empty");
+        els.judgeChecks.innerHTML = "";
+      }
+
+      els.judgeLink.href = hasJudge ? run.judgeResultHref : "#";
+      els.judgeLink.style.visibility = hasJudge ? "visible" : "hidden";
+      els.thumbs.innerHTML = run.screenshots.map((shot, index) => `
+        <button class="thumb" type="button" data-index="${index}" aria-pressed="false">
+          <img src="${escapeHtml(shot.src)}" alt="${escapeHtml(shot.label)} thumbnail">
+          <span>${escapeHtml(shot.label)}</span>
+        </button>
+      `).join("");
+      els.thumbs.querySelectorAll(".thumb").forEach((button) => {
+        button.addEventListener("click", () => setShot(Number(button.dataset.index)));
+      });
+      setShot(0);
+    }
+
+    function setFinalRun(index) {
+      activeRunIndex = Math.max(0, Math.min(index, data.finalRuns.length - 1));
+      els.runSwitcher.querySelectorAll("button").forEach((button, i) => {
+        button.setAttribute("aria-pressed", String(i === activeRunIndex));
+      });
+      renderFinalRun();
+    }
+
+    function setShot(index) {
+      const run = data.finalRuns[activeRunIndex];
+      const shots = run.screenshots;
+      activeShotIndex = Math.max(0, Math.min(index, shots.length - 1));
+      const shot = shots[activeShotIndex];
+      els.mainShot.src = shot.src;
+      els.mainShot.alt = `${shot.label} final execution screenshot`;
+      els.shotLabel.textContent = `${run.id} - ${shot.name}`;
+      els.thumbs.querySelectorAll(".thumb").forEach((button, i) => {
+        button.setAttribute("aria-pressed", String(i === activeShotIndex));
+      });
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      const isEvolution = mode === "evolution";
+      els.modeEvolution.setAttribute("aria-pressed", String(isEvolution));
+      els.modeFinal.setAttribute("aria-pressed", String(!isEvolution));
+      els.evolutionView.classList.toggle("is-active", isEvolution);
+      els.finalView.classList.toggle("is-active", !isEvolution);
+      els.prevStep.disabled = !isEvolution || activeIndex === 0;
+      els.nextStep.disabled = !isEvolution || activeIndex === steps.length - 1;
+      els.playSteps.disabled = !isEvolution;
+      if (!isEvolution) {
+        stopPlayback();
+      }
+    }
+
+    function stopPlayback() {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+      els.playSteps.textContent = "Play";
+      els.playState.textContent = "Paused";
+    }
+
+    function startPlayback() {
+      if (timer) {
+        stopPlayback();
+        return;
+      }
+      setMode("evolution");
+      els.playSteps.textContent = "Pause";
+      els.playState.textContent = "Playing";
+      timer = window.setInterval(() => {
+        if (activeIndex >= steps.length - 1) {
+          stopPlayback();
+          return;
+        }
+        setStep(activeIndex + 1);
+      }, 1800);
+    }
+
+    function init() {
+      els.stepCount.textContent = `${steps.length} steps`;
+      els.filePeak.textContent = `${Math.max(...steps.map((step) => step.cumulativeFiles.length))} files seen`;
+      els.snapshotCap.textContent = `${Math.max(...steps.map((step) => step.snapshotFiles.length))} max snapshot`;
+      renderStepList();
+      renderRunSwitcher();
+      setFinalRun(activeRunIndex);
+      setStep(0);
+      setMode("evolution");
+
+      els.modeEvolution.addEventListener("click", () => setMode("evolution"));
+      els.modeFinal.addEventListener("click", () => setMode("final"));
+      els.prevStep.addEventListener("click", () => {
+        stopPlayback();
+        setStep(activeIndex - 1);
+      });
+      els.nextStep.addEventListener("click", () => {
+        stopPlayback();
+        setStep(activeIndex + 1);
+      });
+      els.playSteps.addEventListener("click", startPlayback);
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticketmaster Baseline · Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./video_bumper.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7fa;
+      --panel: #ffffff;
+      --panel-soft: #fbfbfd;
+      --line: #e6e8ee;
+      --line-soft: #eef0f4;
+      --text: #0f172a;
+      --text-soft: #475569;
+      --muted: #6b7280;
+      --muted-2: #94a3b8;
+      --accent: #2f6feb;
+      --accent-ink: #1d4ed8;
+      --accent-soft: #eaf1ff;
+      --accent-edge: rgba(47, 111, 235, 0.28);
+      --ok: #16a34a;
+      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 16px;
+      height: 100vh;
+      padding: 16px;
+    }
+
+    /* ---------- Shared panel ---------- */
+    .panel {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar-header {
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, var(--panel-soft));
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
+
+    .task-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .task-desc {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .task-desc code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: var(--line-soft);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--text);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--text-soft);
+      letter-spacing: 0.02em;
+    }
+
+    .chip svg { width: 11px; height: 11px; }
+
+    .chip.warn {
+      border-color: rgba(217, 119, 6, 0.3);
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .steps-wrap {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 6px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #cdd2dc transparent;
+    }
+
+    .steps::-webkit-scrollbar { width: 8px; }
+    .steps::-webkit-scrollbar-thumb {
+      background: #d6dae3;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    .steps::-webkit-scrollbar-thumb:hover { background: #b9bfcc; background-clip: padding-box; }
+
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      margin: 2px 0;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+
+    .step + .step::before {
+      content: "";
+      position: absolute;
+      left: 35px;
+      top: -4px;
+      width: 1px;
+      height: 6px;
+      background: var(--line);
+    }
+
+    .step:hover {
+      background: #f7f8fb;
+      border-color: var(--line);
+    }
+
+    .step.is-active {
+      background: var(--accent-soft);
+      border-color: var(--accent-edge);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 6px;
+      background: #f1f3f7;
+      color: var(--text-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      align-self: start;
+      margin-top: 2px;
+    }
+
+    .step.is-active .badge {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-body { min-width: 0; }
+
+    .step-title {
+      display: block;
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.005em;
+      color: var(--text);
+    }
+
+    .step-action {
+      display: block;
+      margin: 4px 0 0;
+      color: var(--text-soft);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .step-action code,
+    .step-note code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(15, 23, 42, 0.05);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--text);
+    }
+
+    .step-note {
+      display: none;
+      margin: 8px 0 0;
+      padding: 7px 10px;
+      border-left: 2px solid var(--accent-edge);
+      background: rgba(47, 111, 235, 0.05);
+      border-radius: 0 6px 6px 0;
+      color: var(--text-soft);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .step.is-active .step-note { display: block; }
+
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--panel-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .panel-footer .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+    }
+
+    /* ---------- Stage (video) ---------- */
+    .stage {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+      min-height: 0;
+      background: #0b1020;
+      border: 1px solid #11162a;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #11162a;
+      background: linear-gradient(180deg, #10162c, #0b1020);
+      color: #c7cce0;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+
+    .stage-header .left,
+    .stage-header .right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .traffic { display: inline-flex; gap: 6px; }
+    .traffic span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2a2f45;
+    }
+
+    .traffic span:nth-child(1) { background: #ff5f57; }
+    .traffic span:nth-child(2) { background: #febc2e; }
+    .traffic span:nth-child(3) { background: #28c840; }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(47, 111, 235, 0.18);
+      color: #cfdcff;
+      border: 1px solid rgba(47, 111, 235, 0.35);
+      font-weight: 600;
+    }
+
+    .live-pill::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #74e0a3;
+      box-shadow: 0 0 0 2px rgba(116, 224, 163, 0.25);
+    }
+
+    .stage-body {
+      position: relative;
+      min-height: 0;
+      padding: 12px;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #050816;
+      border: 1px solid #11162a;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #050816;
+    }
+
+    .video-fallback {
+      padding: 20px;
+      color: #c7cce0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .stage-footer {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 14px;
+      border-top: 1px solid #11162a;
+      background: linear-gradient(180deg, #0b1020, #0a0f1c);
+      color: #e8ecf8;
+    }
+
+    .now-time {
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(47, 111, 235, 0.18);
+      color: #cfdcff;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(47, 111, 235, 0.35);
+    }
+
+    .now-body { min-width: 0; }
+
+    .now-title {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      color: #f3f6ff;
+    }
+
+    .now-text {
+      margin: 4px 0 0;
+      color: #aab2c8;
+      font-size: 12.5px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @media (max-width: 1080px) {
+      .app { grid-template-columns: 340px minmax(0, 1fr); }
+    }
+
+    @media (max-width: 880px) {
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .panel { min-height: 50vh; }
+      .stage { min-height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="panel sidebar" aria-label="Showcase sidebar">
+      <header class="sidebar-header">
+        <div class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span>Webwright · Baseline Workflow</span>
+        </div>
+        <h1 class="task-title">Compare Ticketmaster classical concerts near Seattle for May Day weekend and recommend the best ticket.</h1>
+        <p class="task-desc">A baseline browser workflow without a dedicated Ticketmaster skill; the run builds the event search and comparison manually.</p>
+        <div class="meta-row">
+          <span class="chip warn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+            no skill · baseline
+          </span>
+          <span class="chip">Seattle Symphony</span>
+          <span class="chip">May 1 – May 3, 2026</span>
+          <span class="chip">Under $200</span>
+        </div>
+      </header>
+
+      <div class="steps-wrap">
+        <ol id="steps" class="steps" role="list"></ol>
+      </div>
+
+      <footer class="panel-footer">
+        <span><span class="dot"></span>Showcase ready</span>
+      </footer>
+    </aside>
+
+    <section class="panel stage" aria-label="Task recording">
+      <header class="stage-header">
+        <div class="left">
+          <span class="traffic" aria-hidden="true"><span></span><span></span><span></span></span>
+        </div>
+        <div class="right"></div>
+      </header>
+
+      <div class="stage-body">
+        <div class="video-wrap">
+          <video id="taskVideo" controls preload="metadata" playsinline data-logo-src="./logo.png">
+            <source src="./ticket_without.mp4" type="video/mp4">
+            <div class="video-fallback">
+              Could not load <code>ticket_without.mp4</code>. Make sure the video file sits next to this page, or update the source path above.
+            </div>
+          </video>
+        </div>
+      </div>
+
+      <footer class="stage-footer" aria-live="polite">
+        <span id="nowTime" class="now-time">00:00</span>
+        <div class="now-body">
+          <p id="nowTitle" class="now-title">Ready to play</p>
+          <p id="nowText" class="now-text">Pick an entry on the left to jump to the matching frame.</p>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script src="./video_bumper.js"></script>
+  <script>
+    const keyframes = [
+      {
+        time: 0,
+        labelTime: 0,
+        title: "TASK START: baseline Ticketmaster request",
+        action: "The agent receives the request to find classical concerts near Seattle or Redmond for May Day weekend 2026, compare at least three Ticketmaster options, stay under $200/person, and do not purchase.",
+        note: "No Ticketmaster-specific skill is used, so the browser strategy must be assembled manually."
+      },
+      {
+        time: 5,
+        labelTime: 11,
+        title: "SETUP: choose baseline browser path",
+        action: "The run proceeds with direct browser inspection of live Ticketmaster availability and pricing.",
+        note: "This establishes the baseline browser path for the task."
+      },
+      {
+        time: 21,
+        labelTime: 48,
+        title: "BROWSER TASK START: open Seattle Concerts",
+        action: "The browser opens Ticketmaster's broad Seattle Concerts page with generic category and date filters.",
+        note: "The visible browser task starts here, but the page is broader than the requested classical-only scope."
+      },
+      {
+        time: 28,
+        labelTime: 77,
+        title: "TARGET EVENT: open May 2 show",
+        action: "The run opens Seattle Symphony: Xian Conducts Mozart for Sat May 2 2026 at 8:00 PM, Taper Auditorium, Seattle.",
+        note: "This is a relevant May Day weekend option."
+      },
+      {
+        time: 31,
+        labelTime: 168,
+        title: "OPTION CAPTURE: May 2 prices",
+        action: "The seat map highlights Orchestra Center; Row HH and Row Q options appear at $149.06.",
+        note: "This becomes a strong candidate, but not necessarily the best possible option."
+      },
+      {
+        time: 59,
+        labelTime: 173,
+        title: "DATE CHANGE: switch to Apr 30",
+        action: "The run selects Apr 30 at 7:30 PM and reloads inventory for a nearby but out-of-window date.",
+        note: "This date is outside the requested May 1-3 weekend window."
+      },
+      {
+        time: 61,
+        labelTime: 184,
+        title: "PRICE CHECK: Apr 30 pricing",
+        action: "Apr 30 shows Orchestra Middle Row GG at $145.49 and Orchestra Rear Center Row PP at $155.03.",
+        note: "The prices are visible for the out-of-window date."
+      },
+      {
+        time: 65,
+        labelTime: 198,
+        title: "RECOVERY: return to May 2",
+        action: "The browser returns to the May 2 8:00 PM event and restores the $149.06 Orchestra Center / Front Right candidates.",
+        note: "This returns the workflow to an in-window option after checking Apr 30."
+      },
+      {
+        time: 76,
+        labelTime: 252,
+        title: "SUMMARY DRAFT: compare discovered dates",
+        action: "The agent summarizes that it found May 2 and May 3 in-window shows plus the Apr 30 nearby show.",
+        note: "The baseline run now has data for the in-window shows plus the nearby Apr 30 show."
+      },
+      {
+        time: 82,
+        labelTime: 259,
+        title: "TASK END: recommendation delivered",
+        action: "The agent recommends Seattle Symphony: Xian Conducts Mozart on Sat May 2 2026 at 8:00 PM, Orchestra Center Row HH, $149.06.",
+        note: "The final answer reflects the baseline workflow, including setup steps and the out-of-window date check."
+      }
+    ];
+
+    const video = document.getElementById("taskVideo");
+    const stepsEl = document.getElementById("steps");
+    const nowTime = document.getElementById("nowTime");
+    const nowTitle = document.getElementById("nowTitle");
+    const nowText = document.getElementById("nowText");
+
+    const formatTime = (seconds) => {
+      const safe = Math.max(0, Math.floor(seconds || 0));
+      const m = String(Math.floor(safe / 60)).padStart(2, "0");
+      const s = String(safe % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    };
+
+    const getFrameLabel = (frame) => frame.labelTimeText || formatTime(frame.labelTime ?? frame.time);
+
+    const renderSteps = () => {
+      stepsEl.innerHTML = keyframes.map((frame, index) => `
+        <li>
+          <button class="step" type="button" data-index="${index}" data-time="${frame.time}" aria-label="Jump to ${getFrameLabel(frame)} ${frame.title}">
+            <span class="badge">${getFrameLabel(frame)}</span>
+            <span class="step-body">
+              <span class="step-title">${frame.title}</span>
+              <span class="step-action">${frame.action}</span>
+              <span class="step-note">${frame.note}</span>
+            </span>
+          </button>
+        </li>
+      `).join("");
+    };
+
+    const getActiveIndex = () => {
+      const t = video.currentTime || 0;
+      let active = 0;
+      keyframes.forEach((f, i) => { if (t >= f.time) active = i; });
+      return active;
+    };
+
+    let lastActive = -1;
+    const setActive = (index) => {
+      const frame = keyframes[index];
+      if (lastActive !== index) {
+        const buttons = document.querySelectorAll(".step");
+        buttons.forEach((node, i) => node.classList.toggle("is-active", i === index));
+        const activeBtn = buttons[index];
+        if (activeBtn && lastActive !== -1) {
+          activeBtn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+        lastActive = index;
+      }
+      nowTime.textContent = getFrameLabel(frame);
+      nowTitle.textContent = frame.title;
+      nowText.textContent = frame.action;
+    };
+
+    const jumpTo = (time) => {
+      video.currentTime = time;
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => setActive(getActiveIndex()));
+      }
+      setActive(getActiveIndex());
+    };
+
+    renderSteps();
+    setActive(0);
+
+    stepsEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".step");
+      if (!button) return;
+      jumpTo(Number(button.dataset.time));
+    });
+
+    video.addEventListener("timeupdate", () => {
+      setActive(getActiveIndex());
+    });
+
+  </script>
+</body>
+</html>

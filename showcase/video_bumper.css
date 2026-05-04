@@ -1,0 +1,114 @@
+.video-wrap {
+  isolation: isolate;
+}
+
+.video-wrap video {
+  transform-origin: center;
+  transition: transform 260ms ease, filter 260ms ease;
+}
+
+.video-wrap.is-ending video {
+  animation: video-shrink-to-logo 820ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.video-bumper {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 280ms ease, transform 280ms ease;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(47, 111, 235, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(5, 8, 22, 0.96), rgba(9, 14, 30, 0.9));
+}
+
+.video-bumper.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.video-bumper__card {
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  width: min(54%, 420px);
+  padding: 32px 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  background: rgba(10, 15, 28, 0.72);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(16px);
+}
+
+.video-bumper__logo {
+  display: block;
+  width: min(72%, 260px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.3));
+}
+
+.video-bumper--intro.is-visible .video-bumper__card {
+  animation: logo-intro-pop 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.video-bumper--outro.is-visible .video-bumper__card {
+  animation: logo-outro-snap 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes logo-intro-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes logo-outro-snap {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes video-shrink-to-logo {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) blur(0);
+  }
+  78% {
+    transform: scale(0.72);
+    filter: brightness(0.58) blur(0.4px);
+  }
+  100% {
+    transform: scale(0.72);
+    filter: brightness(0.42) blur(0.8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-wrap.is-ending video,
+  .video-bumper--intro.is-visible .video-bumper__card,
+  .video-bumper--outro.is-visible .video-bumper__card {
+    animation: none;
+  }
+
+  .video-bumper {
+    transition: opacity 120ms ease;
+  }
+}
