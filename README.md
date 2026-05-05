@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>A tiny, terminal-based web agent harness — a flat prompt → observe → act loop you can read end-to-end in one sitting.</strong>
+  <strong>A tiny, terminal-based web agent harness — readable end-to-end, SOTA on web agent benchmarks.</strong>
 </p>
 
 <p align="center">
@@ -18,7 +18,20 @@
 - 📝 **Blog:** [Webwright: A terminal is all you need for web agents](https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/)
 - 🌐 **Website & demo videos:** [microsoft.github.io/Webwright](https://microsoft.github.io/Webwright/)
 
-Webwright drives a Playwright browser through a minimal agent loop with pluggable LLM backends. No multi-agent system, no graph engine, no plugin layer, no hidden orchestration — just a terminal, a browser, and a model.
+Webwright gives agents a terminal where it can launch multiple browswer sessions to inspect the page and complete a web task. It captures and inspects page screenshots/states only when needed. It drives a Playwright browser through a minimal agent loop with pluggable LLM backends. No multi-agent system, no graph engine, no plugin layer, no hidden orchestration — just a terminal, a browser, and a model.
+
+---
+
+## 💡 Motivation: Beyond Step-by-Step Web Interaction in a Stateful Browser
+
+Most web agents today treat the browser session itself as the workspace: at each step the model receives the current page state and predicts a single next operation — a click, a type, a DOM selector, or a short tool call. Whatever the format, the agent is locked into predicting one web action at a time inside a predefined interaction loop. That harness was useful when LLMs were weaker. As models get stronger at writing and debugging code, the same harness becomes a bottleneck.
+
+Webwright takes a different stance: **separate the agent from the browser**, and treat the browser as something the agent can launch, inspect, and discard while developing a program. The persistent artifact is not the browser session — it's the **code and logs in the local workspace**.
+
+- 🧱 **Robust, reusable interaction with web environments** — instead of fragile pixel-level actions, a coding agent with a terminal queries elements, waits for conditions, and handles dynamic behaviors like lazy loading or re-rendering. The resulting scripts can be rerun, adapted, and shared across tasks rather than rediscovered from scratch.
+- ⚡ **Efficient composition of complex workflows** — multi-step interactions like selecting a date or filling a form become a compact program. Loops, functions, and abstractions let the agent generalize across similar tasks (e.g. different dates) without re-predicting the same low-level sequences. Fewer interaction rounds, faster execution, less error accumulation on long horizons.
+- 🧪 **Workspace-as-state, not browser-as-state** — the agent can write exploratory scripts, spawn fresh browser sessions, and decide for itself when to capture screenshots and inspect failures, much like a human engineer iterating on an RPA script.
+- 🪄 **Surprisingly effective despite being minimal** — this stripped-down setup turns out to handle complex and especially long-horizon web tasks well (see [Performance](#-performance)).
 
 ---
 
@@ -33,19 +46,6 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 - 🧪 **Run-artifact first** — every run writes trajectories and screenshots to disk for inspection.
 
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
-
----
-
-## 💡 Motivation: Beyond Step-by-Step Web Interaction in a Stateful Browser
-
-Most web agents today treat the browser session itself as the workspace: at each step the model receives the current page state and predicts a single next operation — a click, a type, a DOM selector, or a short tool call. Whatever the format, the agent is locked into predicting one web action at a time inside a predefined interaction loop. That harness was useful when LLMs were weaker. As models get stronger at writing and debugging code, the same harness becomes a bottleneck.
-
-Webwright takes a different stance: **separate the agent from the browser**, and treat the browser as something the agent can launch, inspect, and discard while developing a program. The persistent artifact is not the browser session — it's the **code and logs in the local workspace**.
-
-- 🧱 **Robust, reusable interaction with web environments** — instead of fragile pixel-level actions, a coding agent with a terminal queries elements, waits for conditions, and handles dynamic behaviors like lazy loading or re-rendering. The resulting scripts can be rerun, adapted, and shared across tasks rather than rediscovered from scratch.
-- ⚡ **Efficient composition of complex workflows** — multi-step interactions like selecting a date or filling a form become a compact program. Loops, functions, and abstractions let the agent generalize across similar tasks (e.g. different dates) without re-predicting the same low-level sequences. Fewer interaction rounds, faster execution, less error accumulation on long horizons.
-- 🧪 **Workspace-as-state, not browser-as-state** — the agent can write exploratory scripts, spawn fresh browser sessions, and decide for itself when to capture screenshots and inspect failures, much like a human engineer iterating on an RPA script.
-- 🪄 **Surprisingly effective despite being minimal** — this stripped-down setup turns out to handle complex and especially long-horizon web tasks well (see [Performance](#-performance)).
 
 ---
 
@@ -135,7 +135,21 @@ We encourage developers to propose ideas for using Webwright to move us closer t
 
 ---
 
-## 🙏 Credits
+## Credits
 
 - [SWE-agent/mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent/tree/main) — design inspiration for the minimal agent loop.
 - [Playwright](https://playwright.dev/) — browser automation.
+
+## Citation
+
+If you use Webwright in your research or build on it, please cite this repository:
+
+```bibtex
+@misc{webwright2026,
+  title        = {Webwright: A terminal is all you need for web agents},
+  author       = {Lu, Yadong and Xu, Lingrui and Huang, Chao and Awadallah, Ahmed},
+  year         = {2026},
+  howpublished = {\url{https://github.com/microsoft/Webwright}},
+  note         = {GitHub repository}
+}
+```
