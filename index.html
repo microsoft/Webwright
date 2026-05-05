@@ -96,6 +96,52 @@
       color: var(--ink);
     }
 
+    .affiliations {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 4px;
+    }
+
+    .affiliations span {
+      color: var(--muted);
+    }
+
+    .ms-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px 4px 6px;
+      margin-left: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink) !important;
+      background: #ffffff;
+    }
+
+    .ms-badge:hover {
+      border-color: var(--ink);
+    }
+
+    .ms-logo {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .org-logo {
+      width: 16px;
+      height: 16px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .ms-word {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
     .hero {
       position: relative;
       display: grid;
@@ -230,8 +276,36 @@
     .architecture,
     .lessons,
     .results,
+    .citation,
     .showcases {
       padding: 72px 0;
+    }
+
+    .bibtex {
+      margin: 22px 0 0;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f7f8fa;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .authors {
+      margin: 18px 0 4px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .affiliations-line {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .section-kicker {
@@ -904,6 +978,7 @@
       .architecture,
       .lessons,
       .results,
+      .citation,
       .showcases {
         padding: 54px 0;
       }
@@ -936,8 +1011,14 @@
       <a href="#showcase">Showcase</a>
       <a href="#architecture">Harness</a>
       <a href="#results">Results</a>
+      <a href="#citation">Cite</a>
       <a href="https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/" target="_blank" rel="noopener">Blog</a>
       <a href="https://github.com/microsoft/Webwright" target="_blank" rel="noopener">GitHub</a>
+      <span class="affiliations">
+        <a href="https://www.microsoft.com/research/" target="_blank" rel="noopener">Microsoft Research</a>
+        <span aria-hidden="true">/</span>
+        <a href="https://sites.google.com/view/chaoh/group-join-us?authuser=0" target="_blank" rel="noopener">HKU</a>
+      </span>
     </nav>
   </header>
 
@@ -1199,6 +1280,23 @@ self_reflect_result.json</pre>
             <p>Qwen3.5-9B on the hard split of Online-Mind2Web when augmented with crafted reusable tools.</p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section id="citation" class="citation">
+      <div class="section-inner">
+        <p class="section-kicker">Citation</p>
+        <h2 class="section-title">Cite this work.</h2>
+        <p class="section-copy">
+          If you use Webwright in your research or build on it, please cite the repository:
+        </p>
+<pre class="bibtex"><code>@misc{webwright2026,
+  title        = {Webwright: A terminal is all you need for web agents},
+  author       = {Lu, Yadong and Xu, Lingrui and Huang, Chao and Awadallah, Ahmed},
+  year         = {2026},
+  howpublished = {\url{https://github.com/microsoft/Webwright}},
+  note         = {GitHub repository}
+}</code></pre>
       </div>
     </section>
 
