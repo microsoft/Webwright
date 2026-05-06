@@ -4,3 +4,4 @@
 outputs/
 .tmp/
 tasks/
+.claude/

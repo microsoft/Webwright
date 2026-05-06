@@ -119,6 +119,54 @@ python -m webwright.run.cli \
 
 ---
 
+## 🤖 Use as a Claude Code Skill
+
+Webwright ships a [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) skill at [`skills/webwright/`](skills/webwright/) that lets Claude Code itself drive the Webwright loop — no extra LLM API key or cost beyond your Claude Code subscription. Claude reads PNG screenshots natively, so the OpenAI-backed `image_qa` and `self_reflection` tools are not used.
+
+### Install
+
+Run these commands from the Webwright repo root to copy (or symlink) the skill into one of Claude Code's skill directories, plus the matching slash-command templates:
+
+```bash
+# Project-scoped (only available when Claude Code is opened inside this repo):
+mkdir -p .claude/skills .claude/commands
+ln -s "$PWD/skills/webwright"          .claude/skills/webwright
+ln -s "$PWD/skills/webwright/commands" .claude/commands/webwright
+
+# Or user-scoped (available in every project):
+mkdir -p ~/.claude/skills ~/.claude/commands
+ln -s "$PWD/skills/webwright"          ~/.claude/skills/webwright
+ln -s "$PWD/skills/webwright/commands" ~/.claude/commands/webwright
+```
+
+Then install Webwright's runtime dependencies once:
+
+```bash
+pip install -e .
+playwright install chromium
+```
+
+### Use
+
+**Start a new Claude Code session** after installing — skills are loaded at session start and won't appear until you restart.
+
+- Project-scoped install: open Claude Code from inside this repo.
+- User-scoped install: open Claude Code in any directory.
+
+You can either ask Claude Code in plain English (the skill auto-activates from its description), or use one of the slash commands:
+
+```
+/webwright:run search Google Flights for the cheapest economy flight from SEA to JFK on 2026-05-15
+/webwright:craft search a ticket on Google Flights from LAX to SFO depart June 7 return June 14
+```
+
+- `/webwright:run` (or any plain prompt) produces a **one-shot** `final_script.py` for the literal task values.
+- `/webwright:craft` produces a **reusable CLI tool**: `final_script.py` becomes one parameterized function with a Google-style `Args:` docstring and an `argparse` wrapper whose flags default to the concrete task values, so you can rerun it later with different arguments — e.g. `python final_script.py --origin JFK --destination LAX --depart-date 2026-07-01`.
+
+In both modes Claude Code scaffolds a workspace with `plan.md`, runs instrumented Playwright scripts under `final_runs/run_<id>/`, and visually self-verifies each critical point against the saved screenshots.
+
+---
+
 ## ♿ Give Back to the Accessibility Community
 
 Web-agent research is now benefiting from infrastructure originally designed for accessibility. Accessibility trees, ARIA metadata, and semantic page representations help assistive technologies expose web content to people with disabilities; today, the same signals also give LLM agents a machine-readable view of pages beyond pixels.
