@@ -52,8 +52,10 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
 
 </details>
+---
 
-## 🆚 How Webwright Differs From Other Browser-Agent Repos
+<details>
+<summary><strong>🆚 How Webwright Differs From Other Browser-Agent Repos</strong></summary>
 
 How they differ at the architectural level:
 
@@ -64,6 +66,7 @@ How they differ at the architectural level:
 | **Action space**    | Playwright code, or NL → LLM-translated Playwright           | Discrete subcommands (`open`, `click @e2`, `snapshot`, `eval`)            | Indexed click/type actions selected by the LLM        | **Free-form Python (writes Playwright scripts itself)**                       |
 | **What is "state"?**| The browser session                                          | The browser session (held by daemon across CLI calls)                     | The browser session                                   | **The local workspace — code, screenshots, logs.** Browser is disposable. |
 | **Loop shape**      | Imperative; `agent()` does multi-step when needed            | One CLI invocation per micro-step                                         | observe → predict next action → execute → repeat      | write code → execute → inspect screenshots → repair (code-as-action)      |
+</details>
 
 
 ---
