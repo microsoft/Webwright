@@ -5,3 +5,5 @@ outputs/
 .tmp/
 tasks/
 .claude/
+.venv/
+venv/

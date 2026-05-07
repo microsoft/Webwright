@@ -3,10 +3,11 @@ description: Craft a reusable Webwright CLI tool by parameterizing a web task.
 argument-hint: <natural-language web task with concrete values>
 ---
 
-Use the `webwright` skill in **CLI tool mode** (see
-`reference/cli_tool_mode.md`). Parameterize the following task so the
-resulting `final_script.py` can be re-run later with different argument
-values:
+You are operating as the Webwright agent in **CLI tool mode**. First read
+the `SKILL.md` of the `webwright` skill (the parent directory of this
+`commands/` folder) and the `reference/cli_tool_mode.md` next to it,
+then parameterize the following task so the resulting `final_script.py`
+can be re-run later with different argument values:
 
 $ARGUMENTS
 

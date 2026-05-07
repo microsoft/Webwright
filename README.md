@@ -80,7 +80,7 @@ State-of-the-art on two real-website benchmarks with a 100-step budget — see t
 
 ---
 
-## �🗺️ Project Map
+## 🗺️ Project Map
 
 ```
 webwright/
@@ -141,7 +141,7 @@ python -m webwright.run.cli \
 
 ## 🔌 Use as a Plugin
 
-Webwright ships a Claude-compatible plugin manifest ([`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)) with a skill at [`skills/webwright/`](skills/webwright/) and slash commands at [`skills/webwright/commands/`](skills/webwright/commands/). The same package installs into both Claude Code and OpenClaw, letting the host agent drive the Webwright loop natively — no extra LLM API key or cost beyond your host subscription. Hosts that read PNG screenshots natively skip the OpenAI-backed `image_qa` / `self_reflection` tools.
+Webwright ships plugin manifests for both [Claude Code](https://docs.claude.com/en/docs/claude-code/plugins) ([`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)) and [OpenAI Codex](https://developers.openai.com/codex/plugins) ([`.codex-plugin/plugin.json`](.codex-plugin/plugin.json)), with the shared skill at [`skills/webwright/`](skills/webwright/) and slash commands at [`skills/webwright/commands/`](skills/webwright/commands/). The host agent drives the Webwright loop natively — no extra LLM API key or cost beyond your host subscription. Hosts that read PNG screenshots natively skip the OpenAI-backed `image_qa` / `self_reflection` tools.
 
 Common runtime deps (install once after either path):
 
@@ -151,7 +151,7 @@ playwright install chromium
 ```
 
 <details>
-<summary><b>🤖 Claude Code</b></summary>
+<summary><b>Claude Code</b></summary>
 
 ### Install
 
@@ -191,6 +191,44 @@ In both modes Claude Code scaffolds a workspace with `plan.md`, runs instrumente
 </details>
 
 <details>
+<summary><b>OpenAI Codex</b></summary>
+
+### Install
+
+Codex reads Claude-style marketplaces, so the same repo works as a Codex plugin marketplace. From the Codex CLI:
+
+```bash
+# 1. Add this repo as a Codex plugin marketplace
+codex plugin marketplace add microsoft/Webwright
+
+# 2. Open the plugin browser and install Webwright
+codex
+/plugins
+```
+
+Prefer a local checkout?
+
+```bash
+codex plugin marketplace add /absolute/path/to/Webwright
+```
+
+Then restart Codex so the new marketplace and plugin are picked up.
+
+### Use
+
+In a new Codex thread, either ask in plain English (the skill auto-activates from its description) or invoke the bundled skill explicitly with `@webwright`:
+
+```
+@webwright search Google Flights for the cheapest economy flight from SEA to JFK on 2026-05-15
+```
+
+Codex scaffolds a workspace with `plan.md`, runs instrumented Playwright scripts under `final_runs/run_<id>/`, and visually self-verifies each critical point against the saved screenshots.
+
+To turn the plugin off without uninstalling, set its entry in `~/.codex/config.toml` to `enabled = false` and restart Codex.
+
+</details>
+
+<details>
 <summary><b>🦞 OpenClaw</b></summary>
 
 ### Install
@@ -214,6 +252,28 @@ openclaw skills  list | grep webwright   # should show "✓ ready"
 The `webwright` skill is now available to any OpenClaw agent surface (CLI, Telegram, etc.) — invoke it by asking the agent in natural language, or via the slash commands shipped under [`skills/webwright/commands/`](skills/webwright/commands/), e.g. `/webwright run <task>`.
 
 To uninstall: `openclaw plugins uninstall webwright`.
+
+</details>
+
+<details>
+<summary><b>Hermes Agent</b></summary>
+
+### Install
+
+[Hermes Agent](https://github.com/NousResearch/hermes-agent) is a [skills-compatible client](https://agentskills.io), so the same `skills/webwright/` folder loads as a Hermes skill. Symlink it into your Hermes user-skills directory:
+
+```bash
+mkdir -p ~/.hermes/skills
+ln -sfn /absolute/path/to/Webwright/skills/webwright ~/.hermes/skills/webwright
+```
+
+No Hermes-specific manifest is needed; only `SKILL.md` is loaded.
+
+### Use
+
+Start Hermes (`hermes`) and ask it to drive a web task in natural language — the skill auto-activates from its description. You can also invoke it explicitly with `/webwright`.
+
+Note: the named subcommands shipped under [`skills/webwright/commands/`](skills/webwright/commands/) (`/webwright:run`, `/webwright:craft`) are a Claude Code / Codex convention and are inert in Hermes; the skill itself still works end-to-end.
 
 </details>
 

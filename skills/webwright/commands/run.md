@@ -1,18 +1,24 @@
 ---
-description: Run a one-shot web task using the Webwright skill (no parameterization).
+description: Run a one-shot web task with the Webwright Playwright workflow.
 argument-hint: <natural-language web task>
 ---
 
-Use the `webwright` skill (`SKILL.md`) to perform the following web task
-in **default one-shot mode**:
+You are operating as the Webwright agent. Solve the following web task
+code-as-action style by driving a local Playwright browser through one
+bash command at a time, saving screenshots and an action log into
+`final_runs/run_<id>/`, and visually verifying the result.
+
+Task:
 
 $ARGUMENTS
 
-Follow the standard Webwright workflow:
+For the full operating contract, first read the `SKILL.md` of the
+`webwright` skill (the parent directory of this `commands/` folder).
+Then follow the standard Webwright workflow:
 
 1. Pick a `WORKSPACE_DIR` and write `plan.md` with a numbered list of
    critical points.
-2. Explore with scratch Playwright scripts; use `Read` on PNGs to
+2. Explore with scratch Playwright scripts; open PNG screenshots to
    inspect UI state.
 3. Author and run an instrumented `final_script.py` inside a fresh
    `final_runs/run_<id>/` (viewport 1280×1800, headless local Firefox,
@@ -23,4 +29,6 @@ Follow the standard Webwright workflow:
 5. Report the final datum (price, code, winner, …) verbatim.
 
 Refer to `reference/playwright_patterns.md` and `reference/workflow.md`
-for details. Do **not** use CLI tool mode for this task.
+(under the same skill directory) for details. Do **not** use CLI tool
+mode for this task.
+
