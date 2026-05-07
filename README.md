@@ -55,12 +55,7 @@ If you want a minimal, easy-to-debug starting point for browser-using agents ins
 
 ## 🎥 Demo
 
-<video src="https://github.com/microsoft/Webwright/raw/main/assets/demo.mp4" controls width="720" muted playsinline>
-  Your browser doesn't support inline video. <a href="assets/demo.mp4">Download demo.mp4</a>.
-</video>
-
-<sub>If the video doesn't render inline on your client, open it directly: <a href="assets/demo.mp4">assets/demo.mp4</a>.</sub>
-
+https://github.com/user-attachments/assets/e23293ea-c600-4f20-9231-cd076235e884
 
 ---
 
