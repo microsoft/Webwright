@@ -619,7 +619,7 @@
 
     .featured-showcase {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       align-items: stretch;
       margin-top: 22px;
@@ -636,7 +636,7 @@
 
     .featured-frame {
       display: grid;
-      grid-template-rows: auto minmax(560px, 72vh);
+      grid-template-rows: auto minmax(520px, 70vh);
       margin-top: 4px;
     }
 
@@ -998,6 +998,10 @@
       .featured-frame {
         grid-template-rows: auto minmax(520px, 68vh);
       }
+
+      .featured-showcase {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1084,6 +1088,43 @@
       </div>
     </section>
 
+    <section id="results" class="results">
+      <div class="section-inner">
+        <p class="section-kicker">Reported results</p>
+        <h2 class="section-title">A small harness, competitive long-horizon performance.</h2>
+        <p class="section-copy">
+          The report evaluates Webwright on live, long-horizon web benchmarks while preserving the simple terminal interface. The same pipeline also records critical-point screenshots, action logs, and reusable command-line tools.
+        </p>
+        <div class="plots-row">
+          <figure class="plot-card">
+            <img src="assets/plot_odysseys.svg" alt="Odysseys long-horizon score plot">
+            <figcaption>Odysseys — long-horizon browsing</figcaption>
+          </figure>
+          <figure class="plot-card">
+            <img src="assets/plot_om2w.svg" alt="Online-Mind2Web accuracy plot">
+            <figcaption>Online-Mind2Web — accuracy on 300 live tasks</figcaption>
+          </figure>
+        </div>
+        <div class="metrics-grid">
+          <article class="metric">
+            <strong>60.1%</strong>
+            <h3>Odysseys</h3>
+            <p>Long-horizon browsing score, a 35.1% relative improvement over the previous reported SOTA.</p>
+          </article>
+          <article class="metric">
+            <strong>86.7%</strong>
+            <h3>Online-Mind2Web</h3>
+            <p>GPT-5.4 accuracy on 300 live tasks across 136 sites with a 100-step budget.</p>
+          </article>
+          <article class="metric">
+            <strong>66.2%</strong>
+            <h3>Small model tools</h3>
+            <p>Qwen3.5-9B on the hard split of Online-Mind2Web when augmented with crafted reusable tools.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="architecture" class="architecture">
       <div class="section-inner">
         <p class="section-kicker">Minimal harness</p>
@@ -1139,11 +1180,10 @@ self_reflect_result.json</pre>
         <p class="section-copy">
           The trace below makes the terminal-native loop visible. The left panel shows the workspace growing as the agent creates plans, scripts, logs, screenshots, and final-run artifacts; the terminal transcript shows the generated command and command_output that produced each observation.
         </p>
-        <div class="featured-showcase" aria-label="Webwright demo video">
+        <div class="featured-showcase" aria-label="Webwright comparison videos">
           <div class="featured-frame">
             <div class="featured-framebar">
-              <b>Webwright demo</b>
-              <span>showcase/webwright_demo_v0.mp4</span>
+              <span>Webwright v.s. Vision based (both GPT-5.4)</span>
             </div>
             <video
               class="featured-video"
@@ -1154,7 +1194,41 @@ self_reflect_result.json</pre>
               playsinline
               preload="metadata"
             >
-              <source src="showcase/webwright_demo_v0.mp4" type="video/mp4">
+              <source src="showcase/vstack_compare_section1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="featured-frame">
+            <div class="featured-framebar">
+              <span>Claude Code with v.s without Webwright Skills</span>
+            </div>
+            <video
+              class="featured-video"
+              controls
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            >
+              <source src="showcase/vstack_compare_section2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="featured-frame">
+            <div class="featured-framebar">
+              <span>Browsing history becomes reusable code</span>
+            </div>
+            <video
+              class="featured-video"
+              controls
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            >
+              <source src="showcase/vstack_compare_section3.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
           </div>
@@ -1236,48 +1310,6 @@ self_reflect_result.json</pre>
           <article class="principle">
             <h3>Reusable tools</h3>
             <p>Once solved, a task script can be parameterized, exported as a CLI, shared with coding agents, and reused instead of rediscovered from scratch.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="results" class="results">
-      <div class="section-inner">
-        <p class="section-kicker">Reported results</p>
-        <h2 class="section-title">A small harness, competitive long-horizon performance.</h2>
-        <p class="section-copy">
-          The report evaluates Webwright on live, long-horizon web benchmarks while preserving the simple terminal interface. The same pipeline also records critical-point screenshots, action logs, and reusable command-line tools.
-        </p>
-        <div class="plots-row">
-          <figure class="plot-card">
-            <img src="assets/plot_odysseys.svg" alt="Odysseys long-horizon score plot">
-            <figcaption>Odysseys — long-horizon browsing</figcaption>
-          </figure>
-          <figure class="plot-card">
-            <img src="assets/plot_om2w.svg" alt="Online-Mind2Web accuracy plot">
-            <figcaption>Online-Mind2Web — accuracy on 300 live tasks</figcaption>
-          </figure>
-        </div>
-        <div class="metrics-grid">
-          <article class="metric">
-            <strong>60.1%</strong>
-            <h3>Odysseys</h3>
-            <p>Long-horizon browsing score, a 35.1% relative improvement over the previous reported SOTA.</p>
-          </article>
-          <article class="metric">
-            <strong>86.7%</strong>
-            <h3>Online-Mind2Web</h3>
-            <p>GPT-5.4 accuracy on 300 live tasks across 136 sites with a 100-step budget.</p>
-          </article>
-          <article class="metric metric-clickable" data-plot="assets/plot_cost.svg" data-plot-title="Average cost per task">
-            <strong>$2.37</strong>
-            <h3>Average cost</h3>
-            <p>Average GPT-5.4 cost per Online-Mind2Web task in the report's cost analysis.</p>
-          </article>
-          <article class="metric">
-            <strong>66.2%</strong>
-            <h3>Small model tools</h3>
-            <p>Qwen3.5-9B on the hard split of Online-Mind2Web when augmented with crafted reusable tools.</p>
           </article>
         </div>
       </div>
