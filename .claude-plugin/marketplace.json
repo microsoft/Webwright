@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "webwright",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "microsoft/Webwright"
+      },
       "description": "Turn your coding agent into a SOTA browser agent. Drives a local Playwright workspace via one bash command at a time, saving screenshots and an action log into final_runs/run_<id>/, and visually self-verifies the result.",
       "version": "0.1.0",
       "category": "automation",
