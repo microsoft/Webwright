@@ -15,14 +15,18 @@
   <img src="https://img.shields.io/badge/footprint-%E2%89%A4~1.5k%20LoC-brightgreen" alt="Footprint">
 </p>
 
-- 📝 **Blog:** [Webwright: A terminal is all you need for web agents](https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/)
-- 🌐 **Website & demo videos:** [microsoft.github.io/Webwright](https://microsoft.github.io/Webwright/)
+- 📝 **Blog:** [Webwright: Turn Your Coding Agents to Be SOTA Browser Agents](https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/)
+- 🌐 **Project Page:** [microsoft.github.io/Webwright](https://microsoft.github.io/Webwright/)
+- 🎥 **Watch Demos:** [demo.mp4](assets/demo.mp4)
 
-Webwright gives agents a terminal where it can launch multiple browswer sessions to inspect the page and complete a web task. It captures and inspects page screenshots/states only when needed. It drives a Playwright browser through a minimal agent loop with pluggable LLM backends. No multi-agent system, no graph engine, no plugin layer, no hidden orchestration — just a terminal, a browser, and a model.
+Webwright gives agents a terminal where it can launch multiple browswer sessions to inspect the page and complete a web task. It captures and inspects page screenshots/states only when needed. It enforces each web tasks to be completed end2end within a re-runable python script, i.e. your web agent browsing history is a single code file. No multi-agent system, no graph engine, no plugin layer, no hidden orchestration — just a terminal, a browser, and a model.
+
+Have your favorite coding agents already? Insert Webwright skills!
 
 ---
 
-## 💡 Motivation: Beyond Step-by-Step Web Interaction in a Stateful Browser
+<details>
+<summary><strong>💡 Motivation: Beyond Step-by-Step Web Interaction in a Stateful Browser</strong></summary>
 
 Most web agents today treat the browser session itself as the workspace: at each step the model receives the current page state and predicts a single next operation — a click, a type, a DOM selector, or a short tool call. Whatever the format, the agent is locked into predicting one web action at a time inside a predefined interaction loop. That harness was useful when LLMs were weaker. As models get stronger at writing and debugging code, the same harness becomes a bottleneck.
 
@@ -33,9 +37,12 @@ Webwright takes a different stance: **separate the agent from the browser**, and
 - 🧪 **Workspace-as-state, not browser-as-state** — the agent can write exploratory scripts, spawn fresh browser sessions, and decide for itself when to capture screenshots and inspect failures, much like a human engineer iterating on an RPA script.
 - 🪄 **Surprisingly effective despite being minimal** — this stripped-down setup turns out to handle complex and especially long-horizon web tasks well (see [Performance](#-performance)).
 
+</details>
+
 ---
 
-## 🌟 Why Webwright
+<details>
+<summary><strong>🌟 Why Webwright</strong></summary>
 
 Most web agent frameworks bury the actual agent loop under layers of abstractions. Webwright takes the opposite stance:
 
@@ -47,6 +54,15 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
 
+</details>
+
+---
+
+## 🎥 Demo
+
+https://github.com/microsoft/Webwright/raw/main/assets/demo.mp4
+
+
 ---
 
 ## 📊 Performance
@@ -54,7 +70,7 @@ If you want a minimal, easy-to-debug starting point for browser-using agents ins
 State-of-the-art on two real-website benchmarks with a 100-step budget — see the [blog post](https://www.microsoft.com/en-us/research/articles/webwright-a-terminal-is-all-you-need-for-web-agents/) for full details.
 
 - 🏆 **Online-Mind2Web (300 tasks):** **86.7%** with GPT-5.4 — highest among open-sourced harnesses in the AutoEval category. Claude Opus 4.7 reaches **84.7%**, and is stronger on the hard split (**80.5%** vs. 76.6% for GPT-5.4 at N=100).
-- 🚀 **Odysseys (200 long-horizon tasks):** **60.1%** with GPT-5.4 (avg. 76.1 steps) — **+15.6 points** over the prior SOTA (Opus 4.6 at 44.5%, using xy-coordinate prediction and persistent browser) and **+26.6 points** over base GPT-5.4 (33.5% using xy-coordinate prediction and persistent browser).
+- 🚀 **Odysseys (200 long-horizon tasks):** **60.1%** with GPT-5.4 (avg. 76.1 steps) — **+15.6 points** over the prior SOTA (Opus 4.6 at 44.5%, using vision based approach and persistent browser) and **+26.6 points** over base GPT-5.4 (33.5% using xy-coordinate prediction and persistent browser).
 - 🧠 **Code-as-action beats coordinate prediction:** Webwright substantially outperforms a reproduced GPT-5.4 screenshot+xy-coordinate baseline across all difficulty splits.
 - 🧰 **Small models + reusable tools:** generated scripts can be packaged as parameterized CLI tools — even **Qwen-3.5-9B** completes tasks well on Online-Mind2Web sites with 5+ tools available.
 
@@ -164,22 +180,6 @@ You can either ask Claude Code in plain English (the skill auto-activates from i
 - `/webwright:craft` produces a **reusable CLI tool**: `final_script.py` becomes one parameterized function with a Google-style `Args:` docstring and an `argparse` wrapper whose flags default to the concrete task values, so you can rerun it later with different arguments — e.g. `python final_script.py --origin JFK --destination LAX --depart-date 2026-07-01`.
 
 In both modes Claude Code scaffolds a workspace with `plan.md`, runs instrumented Playwright scripts under `final_runs/run_<id>/`, and visually self-verifies each critical point against the saved screenshots.
-
----
-
-## ♿ Give Back to the Accessibility Community
-
-Web-agent research is now benefiting from infrastructure originally designed for accessibility. Accessibility trees, ARIA metadata, and semantic page representations help assistive technologies expose web content to people with disabilities; today, the same signals also give LLM agents a machine-readable view of pages beyond pixels.
-
-As builders, we have a responsibility to bring these advances back to the accessibility community. Webwright could support everyday assistive workflows such as:
-
-- 📝 forms and appointments
-- 🚌 transportation lookups
-- 🛒 service and price comparison
-
-…while also acting as a repair layer for the web itself: inspecting pages, detecting missing labels, confusing controls, broken navigation, or inaccessible forms, and generating reusable scripts or overlays that make sites easier to understand and operate.
-
-We encourage developers to propose ideas for using Webwright to move us closer to a more accessible and useful web for everyone.
 
 ---
 
