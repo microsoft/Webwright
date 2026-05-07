@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/9eed3cd2-f8c3-45ff-acc6-1c3ec40a6b02
+
 # Webwright: Turn Your Coding Models to Be SOTA Browser Agents
 
 <p align="center">
@@ -54,8 +58,7 @@ If you want a minimal, easy-to-debug starting point for browser-using agents ins
 ---
 
 ## 🎥 Demo
-
-https://github.com/user-attachments/assets/e23293ea-c600-4f20-9231-cd076235e884
+https://github.com/user-attachments/assets/4ed94cd5-11be-4daa-b2d7-1260a803baca
 
 ---
 
