@@ -5,10 +5,6 @@
 </p>
 
 <p align="center">
-  <strong>A tiny, terminal-based web agent harness — readable end-to-end, SOTA on web agent benchmarks.</strong>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/python-%E2%89%A53.10-blue?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/playwright-chromium-green" alt="Playwright">
   <img src="https://img.shields.io/badge/backends-OpenAI%20%7C%20Anthropic%20%7C%20OpenRouter-orange" alt="Backends">
