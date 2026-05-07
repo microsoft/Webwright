@@ -1,8 +1,10 @@
-# Webwright: Turn Your Coding Models to Be SOTA Browser Agents
+# Webwright
 
 <p align="center">
   <img src="assets/webwright_logo.svg" alt="Webwright logo" width="320">
 </p>
+
+<p align="center"><b>Turn Your Coding Models to Be SOTA Browser Agents</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-%E2%89%A53.10-blue?logo=python&logoColor=white" alt="Python">
@@ -48,6 +50,21 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 - 🧪 **Run-artifact first** — every run writes trajectories and screenshots to disk for inspection.
 
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
+
+</details>
+
+<details>
+<summary><strong>🆚 How Webwright Differs From Other Browser-Agent Repos</strong></summary>
+
+How they differ at the architectural level:
+
+|                     | **Stagehand (Browserbase)**                                  | **agent-browser (Vercel)**                                                | **browser-use**                                       | **Webwright **                                                       |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Language / form** | TypeScript SDK                                               | Rust CLI + background daemon                                              | Python library + CLI                                  | Python harness, ~1.5k LoC core agent loop                                  |
+| **Paradigm**        | Hybrid: code + NL primitives (`act` / `extract` / `agent`)   | CLI tool that *another* agent (Claude Code, Codex, etc.) calls            | Autonomous LLM agent loop over DOM/AX snapshots       | **Coding agent with a terminal**; browser is just an environment it spawns |
+| **Action space**    | Playwright code, or NL → LLM-translated Playwright           | Discrete subcommands (`open`, `click @e2`, `snapshot`, `eval`)            | Indexed click/type actions selected by the LLM        | Free-form Python (writes Playwright scripts itself)                       |
+| **What is "state"?**| The browser session                                          | The browser session (held by daemon across CLI calls)                     | The browser session                                   | **The local workspace — code, screenshots, logs.** Browser is disposable. |
+| **Loop shape**      | Imperative; `agent()` does multi-step when needed            | One CLI invocation per micro-step                                         | observe → predict next action → execute → repeat      | write code → execute → inspect screenshots → repair (code-as-action)      |
 
 </details>
 
