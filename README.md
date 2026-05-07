@@ -139,39 +139,42 @@ python -m webwright.run.cli \
 
 ---
 
-## 🤖 Use as a Claude Code Skill
+## 🔌 Use as a Plugin
 
-Webwright ships a [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) skill at [`skills/webwright/`](skills/webwright/) that lets Claude Code itself drive the Webwright loop — no extra LLM API key or cost beyond your Claude Code subscription. Claude reads PNG screenshots natively, so the OpenAI-backed `image_qa` and `self_reflection` tools are not used.
+Webwright ships a Claude-compatible plugin manifest ([`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)) with a skill at [`skills/webwright/`](skills/webwright/) and slash commands at [`skills/webwright/commands/`](skills/webwright/commands/). The same package installs into both Claude Code and OpenClaw, letting the host agent drive the Webwright loop natively — no extra LLM API key or cost beyond your host subscription. Hosts that read PNG screenshots natively skip the OpenAI-backed `image_qa` / `self_reflection` tools.
 
-### Install
-
-Run these commands from the Webwright repo root to copy (or symlink) the skill into one of Claude Code's skill directories, plus the matching slash-command templates:
-
-```bash
-# Project-scoped (only available when Claude Code is opened inside this repo):
-mkdir -p .claude/skills .claude/commands
-ln -s "$PWD/skills/webwright"          .claude/skills/webwright
-ln -s "$PWD/skills/webwright/commands" .claude/commands/webwright
-
-# Or user-scoped (available in every project):
-mkdir -p ~/.claude/skills ~/.claude/commands
-ln -s "$PWD/skills/webwright"          ~/.claude/skills/webwright
-ln -s "$PWD/skills/webwright/commands" ~/.claude/commands/webwright
-```
-
-Then install Webwright's runtime dependencies once:
+Common runtime deps (install once after either path):
 
 ```bash
 pip install -e .
 playwright install chromium
 ```
 
+<details>
+<summary><b>🤖 Claude Code</b></summary>
+
+### Install
+
+Install through the bundled marketplace inside Claude Code:
+
+```text
+# 1. Add this repo as a Claude Code plugin marketplace
+/plugin marketplace add microsoft/Webwright
+
+# 2. Install the plugin from that marketplace
+/plugin install webwright@webwright
+```
+
+Prefer a local checkout? Point the marketplace command at the cloned repo instead:
+
+```text
+/plugin marketplace add /absolute/path/to/Webwright
+/plugin install webwright@webwright
+```
+
 ### Use
 
-**Start a new Claude Code session** after installing — skills are loaded at session start and won't appear until you restart.
-
-- Project-scoped install: open Claude Code from inside this repo.
-- User-scoped install: open Claude Code in any directory.
+**Start a new Claude Code session** after installing — plugins are loaded at session start and won't appear until you restart.
 
 You can either ask Claude Code in plain English (the skill auto-activates from its description), or use one of the slash commands:
 
@@ -184,6 +187,35 @@ You can either ask Claude Code in plain English (the skill auto-activates from i
 - `/webwright:craft` produces a **reusable CLI tool**: `final_script.py` becomes one parameterized function with a Google-style `Args:` docstring and an `argparse` wrapper whose flags default to the concrete task values, so you can rerun it later with different arguments — e.g. `python final_script.py --origin JFK --destination LAX --depart-date 2026-07-01`.
 
 In both modes Claude Code scaffolds a workspace with `plan.md`, runs instrumented Playwright scripts under `final_runs/run_<id>/`, and visually self-verifies each critical point against the saved screenshots.
+
+</details>
+
+<details>
+<summary><b>🦞 OpenClaw</b></summary>
+
+### Install
+
+Install directly from a local checkout (path, archive, npm spec, git repo, or `clawhub:` spec all work):
+
+```bash
+openclaw plugins install /absolute/path/to/Webwright
+openclaw gateway restart   # reload so the plugin and skill are picked up
+```
+
+Verify:
+
+```bash
+openclaw plugins list | grep webwright
+openclaw skills  list | grep webwright   # should show "✓ ready"
+```
+
+### Use
+
+The `webwright` skill is now available to any OpenClaw agent surface (CLI, Telegram, etc.) — invoke it by asking the agent in natural language, or via the slash commands shipped under [`skills/webwright/commands/`](skills/webwright/commands/), e.g. `/webwright run <task>`.
+
+To uninstall: `openclaw plugins uninstall webwright`.
+
+</details>
 
 ---
 

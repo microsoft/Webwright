@@ -121,7 +121,7 @@ Rules:
    so the resolved inputs are visible in any verification pass.
 
 6. Same instrumentation as default mode: viewport 1280×1800, headless
-   local Chromium, no `full_page=True`, screenshots saved as
+   local Firefox, no `full_page=True`, screenshots saved as
    `final_runs/run_<id>/screenshots/final_execution_<step>_<action>.png`,
    final datum appended to `final_script_log.txt`.
 

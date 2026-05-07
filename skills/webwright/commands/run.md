@@ -15,7 +15,7 @@ Follow the standard Webwright workflow:
 2. Explore with scratch Playwright scripts; use `Read` on PNGs to
    inspect UI state.
 3. Author and run an instrumented `final_script.py` inside a fresh
-   `final_runs/run_<id>/` (viewport 1280×1800, headless local Chromium,
+   `final_runs/run_<id>/` (viewport 1280×1800, headless local Firefox,
    no `full_page=True`).
 4. Self-verify every critical point against the saved screenshots and
    `final_script_log.txt`. Diagnose, fix, and re-run in a new

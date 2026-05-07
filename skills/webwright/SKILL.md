@@ -37,8 +37,7 @@ own native abilities**: you read PNGs with `Read` and verify success against
 From the Webwright repo root:
 
 ```bash
-pip install -e .
-playwright install chromium
+playwright install firefox
 ```
 
 No API keys needed for this skill.
@@ -60,9 +59,11 @@ Mirror what `base.yaml`'s `instance_template` requires:
     clean run; one `step <n> action: <reason and action>` line per
     constraint-relevant interaction; the final datum (price, code, winner,
     quote, etc.) printed at the end.
-- Browser mode is **local**: every Playwright run launches a fresh Chromium
-  via `playwright.chromium.launch(headless=True)`. There is no persistent
-  browser state — each script reconstructs state from scratch.
+- Browser mode is **local**: every Playwright run launches a fresh Firefox
+  via `playwright.firefox.launch(headless=True)`. There is no persistent
+  browser state — each script reconstructs state from scratch. (Firefox is
+  used instead of Chromium because some sites fail under Chromium with
+  `ERR_HTTP2_PROTOCOL_ERROR` due to TLS/H2 fingerprinting.)
 - **Always use `viewport={"width": 1280, "height": 1800}`. Never call
   `page.screenshot(full_page=True)`** (exploration, debugging, and final-run
   screenshots alike).
@@ -110,7 +111,7 @@ Mirror what `base.yaml`'s `instance_template` requires:
 6. **Done.** Only when every CP in `plan.md` is checked off with cited
    evidence. Report the final datum to the user.
 
-## Hard Rules (from `base.yaml`)
+## Hard Rules
 
 - One bash command per step; observe its output before issuing the next.
 - Use stable selectors and current-run evidence — never guess UI state.

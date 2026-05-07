@@ -50,7 +50,7 @@ Create a fresh `final_runs/run_<id>/` (use the next integer above any
 existing `run_*`) and place `final_script.py` inside it. Instrument per
 `playwright_patterns.md`:
 
-- viewport 1280×1800, headless local Chromium, no `full_page`;
+- viewport 1280×1800, headless local Firefox, no `full_page`;
 - one `final_execution_<step>_<action>.png` per CP;
 - one `step <n> action: <reason and action>` log line per
   constraint-relevant interaction;
