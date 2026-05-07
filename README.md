@@ -1,7 +1,3 @@
-
-
-https://github.com/user-attachments/assets/9eed3cd2-f8c3-45ff-acc6-1c3ec40a6b02
-
 # Webwright: Turn Your Coding Models to Be SOTA Browser Agents
 
 <p align="center">
