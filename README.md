@@ -46,27 +46,25 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 - 🪶 **Lightweight by design** — core agent loop in a single ~450-line file, Playwright environment in ~570 lines, CLI in ~150 lines.
 - 🧩 **Pluggable model backends** — OpenAI, Anthropic, and OpenRouter, each ~150–200 lines.
 - 🔍 **Zero hidden frameworks** — just `httpx`, `pydantic`, `playwright`, and `typer`.
-- 🔁 **Flat prompt → observe → act loop** — readable end-to-end, easy to debug, easy to fork.
+- 🔁 **Flat prompt → observe → execute script loop** — readable end-to-end, easy to debug, easy to fork.
 - 🧪 **Run-artifact first** — every run writes trajectories and screenshots to disk for inspection.
 
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
 
 </details>
 
-<details>
-<summary><strong>🆚 How Webwright Differs From Other Browser-Agent Repos</strong></summary>
+## 🆚 How Webwright Differs From Other Browser-Agent Repos
 
 How they differ at the architectural level:
 
-|                     | **Stagehand (Browserbase)**                                  | **agent-browser (Vercel)**                                                | **browser-use**                                       | **Webwright **                                                       |
+|                     | **Stagehand (Browserbase)**                                  | **agent-browser (Vercel)**                                                | **browser-use**                                       | **Webwright**                                                       |
 | ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Language / form** | TypeScript SDK                                               | Rust CLI + background daemon                                              | Python library + CLI                                  | Python harness, ~1.5k LoC core agent loop                                  |
+|                                  |
 | **Paradigm**        | Hybrid: code + NL primitives (`act` / `extract` / `agent`)   | CLI tool that *another* agent (Claude Code, Codex, etc.) calls            | Autonomous LLM agent loop over DOM/AX snapshots       | **Coding agent with a terminal**; browser is just an environment it spawns |
-| **Action space**    | Playwright code, or NL → LLM-translated Playwright           | Discrete subcommands (`open`, `click @e2`, `snapshot`, `eval`)            | Indexed click/type actions selected by the LLM        | Free-form Python (writes Playwright scripts itself)                       |
+| **Action space**    | Playwright code, or NL → LLM-translated Playwright           | Discrete subcommands (`open`, `click @e2`, `snapshot`, `eval`)            | Indexed click/type actions selected by the LLM        | **Free-form Python (writes Playwright scripts itself)**                       |
 | **What is "state"?**| The browser session                                          | The browser session (held by daemon across CLI calls)                     | The browser session                                   | **The local workspace — code, screenshots, logs.** Browser is disposable. |
 | **Loop shape**      | Imperative; `agent()` does multi-step when needed            | One CLI invocation per micro-step                                         | observe → predict next action → execute → repeat      | write code → execute → inspect screenshots → repair (code-as-action)      |
 
-</details>
 
 ---
 
