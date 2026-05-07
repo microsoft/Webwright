@@ -4,7 +4,7 @@
   <img src="assets/webwright_logo.svg" alt="Webwright logo" width="320">
 </p>
 
-<p align="center"><b>Turn Your Coding Models to Be SOTA Browser Agents</b></p>
+<p align="center"><b>Turn Your Coding Models to Be State-of-the-art Browser Agents</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-%E2%89%A53.10-blue?logo=python&logoColor=white" alt="Python">
@@ -18,7 +18,7 @@
 
 Webwright gives LLM a terminal where it can launch multiple browswer sessions to inspect the page and complete a web task. It captures and inspects page screenshots/states only when needed. It enforces each web tasks to be completed end2end within a re-runable python script, i.e. your web agent browsing history is a single code file. No multi-agent system, no graph engine, no plugin layer, no hidden orchestration — just a terminal, a browser, and a model.
 
-Have your favorite coding agents already? Consider add the [Webwright skills](#-use-as-a-claude-code-skill)!
+Already got your favorite agents, and wonder how to make Claude Code, Codex, Hermes, OpenClaw more capable in browser tasks? Consider add [Webwright plugin/skills](#-use-as-a-claude-code-skill)!
 
 ---
 
@@ -52,6 +52,7 @@ Most web agent frameworks bury the actual agent loop under layers of abstraction
 If you want a minimal, easy-to-debug starting point for browser-using agents instead of another heavyweight platform, this is it.
 
 </details>
+
 ---
 
 <details>
@@ -61,7 +62,6 @@ How they differ at the architectural level:
 
 |                     | **Stagehand (Browserbase)**                                  | **agent-browser (Vercel)**                                                | **browser-use**                                       | **Webwright**                                                       |
 | ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
-|                                  |
 | **Paradigm**        | Hybrid: code + NL primitives (`act` / `extract` / `agent`)   | CLI tool that *another* agent (Claude Code, Codex, etc.) calls            | Autonomous LLM agent loop over DOM/AX snapshots       | **Coding agent with a terminal**; browser is just an environment it spawns |
 | **Action space**    | Playwright code, or NL → LLM-translated Playwright           | Discrete subcommands (`open`, `click @e2`, `snapshot`, `eval`)            | Indexed click/type actions selected by the LLM        | **Free-form Python (writes Playwright scripts itself)**                       |
 | **What is "state"?**| The browser session                                          | The browser session (held by daemon across CLI calls)                     | The browser session                                   | **The local workspace — code, screenshots, logs.** Browser is disposable. |
