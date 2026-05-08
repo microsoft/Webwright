@@ -133,7 +133,7 @@ Export credentials for the chosen backend (e.g. `OPENAI_API_KEY` or `ANTHROPIC_A
 ```bash
 python -m webwright.run.cli \
     -c base.yaml -c model_openai.yaml \
-    -t "Find the cheapest economy flight from SEA to JFK on 2026-05-15" \
+    -t "Search for flights from SEA to JFK on 2026-08-15 to 2026-08-20" \
     --start-url https://www.google.com/flights \
     --task-id demo_openai \
     -o outputs/default
@@ -191,7 +191,7 @@ Prefer a local checkout? Point the marketplace command at the cloned repo instea
 You can either ask Claude Code in plain English (the skill auto-activates from its description), or use one of the slash commands:
 
 ```
-/webwright:run search Google Flights for the cheapest economy flight from SEA to JFK on 2026-05-15
+/webwright:run search Google Flights for flights from SEA to JFK on 2026-08-15 to 2026-08-20
 /webwright:craft search a ticket on Google Flights from LAX to SFO depart June 7 return June 14
 ```
 
@@ -231,7 +231,7 @@ Then restart Codex so the new marketplace and plugin are picked up.
 In a new Codex thread, either ask in plain English (the skill auto-activates from its description) or invoke the bundled skill explicitly with `@webwright`:
 
 ```
-@webwright search Google Flights for the cheapest economy flight from SEA to JFK on 2026-05-15
+@webwright search Google Flights for flights from SEA to JFK on 2026-08-15 to 2026-08-20
 ```
 
 Codex scaffolds a workspace with `plan.md`, runs instrumented Playwright scripts under `final_runs/run_<id>/`, and visually self-verifies each critical point against the saved screenshots.

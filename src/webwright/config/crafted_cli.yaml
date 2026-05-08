@@ -160,11 +160,11 @@ agent:
       ```
     - Ask a grounded question about a saved screenshot:
       ```
-      python -m miniswewebagent.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image screenshots/explore.png --question "Is the BMW filter chip visibly selected?"
+      python -m webwright.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image screenshots/explore.png --question "Is the BMW filter chip visibly selected?"
       ```
     - Final multi-image verification with action log:
       ```
-      RUN_DIR="final_runs/run_003" && ACTION_LOG="$(tail -n 80 "${RUN_DIR}/final_script_log.txt")" && python -m miniswewebagent.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image "${RUN_DIR}/screenshots/final_execution_1_apply_constraint.png" --image "${RUN_DIR}/screenshots/final_execution_2_sort.png" --image "${RUN_DIR}/screenshots/final_execution_3_final_state.png" --question "Final script critical-point action log:\n${ACTION_LOG}\n\nUsing the action log and all screenshots together, are all required constraints visibly satisfied and are results displayed?"
+      RUN_DIR="final_runs/run_003" && ACTION_LOG="$(tail -n 80 "${RUN_DIR}/final_script_log.txt")" && python -m webwright.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image "${RUN_DIR}/screenshots/final_execution_1_apply_constraint.png" --image "${RUN_DIR}/screenshots/final_execution_2_sort.png" --image "${RUN_DIR}/screenshots/final_execution_3_final_state.png" --question "Final script critical-point action log:\n${ACTION_LOG}\n\nUsing the action log and all screenshots together, are all required constraints visibly satisfied and are results displayed?"
       ```
 
     ## Rules
@@ -182,7 +182,7 @@ agent:
     ## Task Reflection Tool
 
     Do NOT hand-roll a `judge.py` that loops `image_qa`. Use the built-in
-    `miniswewebagent.tools.self_reflection` CLI.
+    `webwright.tools.self_reflection` CLI.
 
       1. Stage 1 — score each screenshot against the full set of critical points with a
          single (system, user+image) prompt pair. The tool parses a `Score: 1-5` and
@@ -198,7 +198,7 @@ agent:
 
     **CLI interface:**
     ```
-    python -m miniswewebagent.tools.self_reflection \
+    python -m webwright.tools.self_reflection \
       --config {{ workspace_dir }}/judge_config.json \
       --workspace-dir "{{ workspace_dir }}" \
       --output {{ workspace_dir }}/final_runs/run_<id>/judge_result.json
@@ -277,7 +277,7 @@ agent:
          successfully from scratch with NO arguments inside a `final_runs/run_<id>/`
          folder, producing `final_script_log.txt` (including a `step 0 params: ...`
          line) and all critical-point screenshots.
-      4. `python -m miniswewebagent.tools.self_reflection --config judge_config.json
+      4. `python -m webwright.tools.self_reflection --config judge_config.json
          --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/judge_result.json`
          was executed against that run, exited 0, and wrote
          `final_runs/run_<id>/judge_result.json` with `"predicted_label": 1`.
@@ -344,7 +344,7 @@ agent:
     ## Image QA Tool
 
     - Use image_qa during exploration to inspect screenshots and verify UI state:
-      `python -m miniswewebagent.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image screenshots/example.png --question "inspect prompt"`
+      `python -m webwright.tools.image_qa --workspace-dir "{{ workspace_dir }}" --image screenshots/example.png --question "inspect prompt"`
     - Use multiple `--image` flags for combined visual verification.
     - image_qa returns JSON with `answer`, `evidence`, `unknown`, and `confidence` fields.
 
@@ -366,13 +366,13 @@ agent:
        ```
        Each critical point must be independently verifiable from a screenshot or log entry. Each parameter listed here MUST appear as both a function argument AND a `--flag` on the CLI in `final_script.py`.
 
-    2. **Author judge_config.json (once)**: Write `{{ workspace_dir }}/judge_config.json` containing only the four prompts (`image_judge_system_prompt`, `image_judge_user_prompt`, `final_verdict_system_prompt`, `final_verdict_user_prompt`) for `miniswewebagent.tools.self_reflection`. Embed the full critical-point list from `plan.md` and the task description into the user prompts, but keep the prompts generic — this file is reused verbatim for every `self_reflection` invocation, so do NOT hard-code a specific run id, screenshot filename, or `final_script_log.txt` content.
+    2. **Author judge_config.json (once)**: Write `{{ workspace_dir }}/judge_config.json` containing only the four prompts (`image_judge_system_prompt`, `image_judge_user_prompt`, `final_verdict_system_prompt`, `final_verdict_user_prompt`) for `webwright.tools.self_reflection`. Embed the full critical-point list from `plan.md` and the task description into the user prompts, but keep the prompts generic — this file is reused verbatim for every `self_reflection` invocation, so do NOT hard-code a specific run id, screenshot filename, or `final_script_log.txt` content.
 
     3. **Exploration**: Inspect `task.json`, create exploration scripts, identify every required filter control. Use `image_qa` during exploration to verify UI state.
 
     4. **Final script**: Write `final_script.py` as a CLI tool wrapping a single reusable function (see the **Final-Script Shape (CLI Tool)** section in the system prompt). Every parameter listed under `# Parameters` in `plan.md` MUST appear both as a function argument (with a docstring `Args:` entry) and as an `argparse` `--flag` whose default equals the concrete task value. Run the script once with NO arguments in a new `final_runs/run_<id>/` folder so the defaults reproduce the original task. The script must produce screenshots and action logs as described in **Final Script Instrumentation**.
 
-    5. **Run self_reflection**: Execute `python -m miniswewebagent.tools.self_reflection --config judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/judge_result.json`. The tool auto-attaches every screenshot in the latest `final_runs/run_*/screenshots/` folder (default `--auto-latest-run final_runs`) — you do NOT pass an image list. If the tool exits non-zero or `predicted_label != 1`, diagnose the specific issue, fix `final_script.py` (preserving the CLI shape), re-run it with NO arguments in a new `final_runs/run_<id+1>/` folder, and re-invoke `self_reflection` against the new run. Do NOT edit `judge_config.json` between attempts.
+    5. **Run self_reflection**: Execute `python -m webwright.tools.self_reflection --config judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/judge_result.json`. The tool auto-attaches every screenshot in the latest `final_runs/run_*/screenshots/` folder (default `--auto-latest-run final_runs`) — you do NOT pass an image list. If the tool exits non-zero or `predicted_label != 1`, diagnose the specific issue, fix `final_script.py` (preserving the CLI shape), re-run it with NO arguments in a new `final_runs/run_<id+1>/` folder, and re-invoke `self_reflection` against the new run. Do NOT edit `judge_config.json` between attempts.
 
     6. **Declare done**: Set `"done": true` ONLY after `self_reflection` exits 0 and `judge_result.json` reports `"predicted_label": 1` for the latest run. The external judge reads that same `judge_result.json` as the final verdict. Declaring done in any other state is a failure.
 
@@ -397,7 +397,7 @@ agent:
     1. `plan.md` exists with all critical points identified AND a `# Parameters` section listing every parameterisable requirement.
     2. `judge_config.json` exists with all four prompts populated for `self_reflection`.
     3. `final_script.py` is a CLI tool: it defines a reusable function with a full `Args:` docstring, every `# Parameters` entry is both a function argument and an `argparse --flag` with the task value as default, and it was run from scratch with NO arguments in a `final_runs/run_<id>/` folder.
-    4. `python -m miniswewebagent.tools.self_reflection --config judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/judge_result.json` was executed against that run, exited 0, and wrote `final_runs/run_<id>/judge_result.json` with `"predicted_label": 1`.
+    4. `python -m webwright.tools.self_reflection --config judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/judge_result.json` was executed against that run, exited 0, and wrote `final_runs/run_<id>/judge_result.json` with `"predicted_label": 1`.
     5. `ls -R final_runs/run_<id>` and `cat final_runs/run_<id>/final_script_log.txt` confirm the expected artifacts (including a `step 0 params: ...` line).
 
     Do NOT declare done if `self_reflection` exits non-zero, if `predicted_label` is not 1, if the run folder is missing, if required screenshots are missing, or if `self_reflection` has not been run against the latest `final_runs/run_<id>/`.
