@@ -39,6 +39,9 @@ class AgentConfig(BaseModel):
     require_self_reflection_success: bool = False
     summary_every_n_steps: int = 0
     summary_user_prompt: str = DEFAULT_SUMMARY_USER_PROMPT
+    compact_observation_history: bool = False
+    recent_observation_limit: int = 4
+    compacted_observation_chars: int = 1200
     output_path: Path | None = None
 
 
@@ -305,6 +308,55 @@ class DefaultAgent:
         )
         self.messages = [system_message, summary_message]
 
+    def _observation_summary_for_context(self, observation: dict[str, Any]) -> str:
+        lines = [
+            "Observation compacted. Full command and output remain on disk.",
+            f"Status: {'ok' if observation.get('success') else 'error'}",
+            f"Return code: {observation.get('returncode', '')}",
+        ]
+        for label, key in (
+            ("Command file", "command_path"),
+            ("Step log", "log_path"),
+            ("Final script", "final_script_path"),
+            ("Latest screenshot", "screenshot_path"),
+        ):
+            value = observation.get(key)
+            if value:
+                lines.append(f"{label}: {value}")
+        exception = str(observation.get("exception") or "").strip()
+        if exception:
+            lines.append(f"Exception: {exception[: self.config.compacted_observation_chars]}")
+        files = observation.get("workspace_files")
+        if isinstance(files, list) and files:
+            lines.append("Recent files: " + ", ".join(str(item) for item in files[:10]))
+        text = "\n".join(lines)
+        if len(text) <= self.config.compacted_observation_chars:
+            return text
+        omitted = len(text) - self.config.compacted_observation_chars
+        return f"{text[: self.config.compacted_observation_chars]}\n... [{omitted} characters omitted]"
+
+    def _compact_old_observations(self) -> None:
+        if not self.config.compact_observation_history:
+            return
+        observation_indices = [
+            index
+            for index, message in enumerate(self.messages)
+            if message.get("role") == "user" and isinstance(message.get("extra", {}).get("observation"), dict)
+        ]
+        keep = max(self.config.recent_observation_limit, 0)
+        compact_indices = observation_indices if keep == 0 else observation_indices[:-keep]
+        for index in compact_indices:
+            message = self.messages[index]
+            extra = dict(message.get("extra", {}))
+            if extra.get("observation_compacted"):
+                continue
+            observation = extra.get("observation")
+            if not isinstance(observation, dict):
+                continue
+            extra["observation_compacted"] = True
+            message["content"] = self._observation_summary_for_context(observation)
+            message["extra"] = extra
+
     def run(self, task: str = "", **kwargs) -> dict[str, Any]:
         self.extra_template_vars |= {"task": task, **kwargs}
         self.messages = []
@@ -359,6 +411,7 @@ class DefaultAgent:
                     extra={"exit_status": "LimitsExceeded", "submission": ""},
                 )
             )
+        self._compact_old_observations()
         message = self.model.query(self.messages)
         self.n_calls += 1
         self.add_messages(message)

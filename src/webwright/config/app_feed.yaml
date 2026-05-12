@@ -13,7 +13,26 @@
 #     --task-id seattle_transit_feed \
 #     -o outputs/default
 
+model:
+  # App/feed tasks usually need to author and verify a full PWA script. The
+  # base default is intentionally smaller for generic tasks, but it can truncate
+  # app/feed final_script.py authoring.
+  max_output_tokens: 12000
+  request_timeout_seconds: 300
+  observation_truncation_chars: 8000
+
+environment:
+  command_timeout_seconds: 360
+  output_truncation_chars: 8000
+  command_preview_chars: 1600
+  final_script_preview_chars: 2000
+  recent_files_limit: 25
+
 agent:
+  compact_observation_history: true
+  recent_observation_limit: 4
+  compacted_observation_chars: 1200
+  summary_every_n_steps: 8
   system_template: |
     You are a web agent operating through a local terminal + workspace harness.
 
@@ -28,7 +47,8 @@ agent:
     Emit exactly ONE JSON object per turn. Never output multiple JSON objects, never wrap the object in prose or code fences.
 
     Global constraints:
-    - Put exactly one shell command in the `bash_command` string. Never emit raw Python or shell outside that field. Use heredocs (`python - <<'PY' ... PY`) to run Python inline when needed.
+    - Put exactly one shell command in the `bash_command` string. Never emit raw Python or shell outside that field. Use heredocs (`"$WEBWRIGHT_PYTHON" - <<'PY' ... PY`) to run Python inline when needed.
+    - The harness sets `WEBWRIGHT_PYTHON` to the Python interpreter that launched Webwright. Use `"$WEBWRIGHT_PYTHON"` for every Python command you execute, including final_script.py, import checks, helper one-liners, and self_reflection. Do not assume bare `python` points at a compatible environment.
     - Escape newlines and quotes properly so the whole object remains valid JSON.
     - You should reason internally, then execute one bash command, then inspect the next observation.
     - There is NO persistent browser state. Every Playwright exploration run must create a fresh browser session, navigate from scratch, and reconstruct state via code.
@@ -51,10 +71,10 @@ agent:
     In this variant, `final_script.py` is NOT a one-shot CLI report and NOT a
     UI-only server. It must be a dual-use Python script for a multisite
     information feed task:
-    - task mode: `python final_script.py --run-once` executes the reusable
+    - task mode: `"$WEBWRIGHT_PYTHON" final_script.py --run-once` executes the reusable
       Webwright collection task once, writes `app/feed.json`, and prints the
       unified JSON result;
-    - app mode: `python final_script.py` starts the local PWA server, and the
+    - app mode: `"$WEBWRIGHT_PYTHON" final_script.py` starts the local PWA server, and the
       browser page calls `/run`, which executes the same collection function.
     The app is the presentation layer; the underlying data collection must
     still be a normal Webwright task with task-relevant browser/source
@@ -77,7 +97,7 @@ agent:
     MANDATORY reference template:
     - Before writing `final_script.py`, locate and inspect the packaged
       `webwright/reference/app_feed_template.py` file. From the workspace, use
-      `python -c "from pathlib import Path; import webwright; print(Path(webwright.__file__).resolve().parent / 'reference' / 'app_feed_template.py')"`
+      `"$WEBWRIGHT_PYTHON" -c "from pathlib import Path; import webwright; print(Path(webwright.__file__).resolve().parent / 'reference' / 'app_feed_template.py')"`
       to find the absolute template path.
     - Copy that template's structure into `final_runs/run_<id>/final_script.py`.
     - Replace only the task-specific configuration (`APP_TITLE`, `APP_QUERY`, `SOURCES`, limits), `fetch_source_items(source)`, `sort_items(items)`, and item metadata/summary logic.
@@ -129,15 +149,15 @@ agent:
 
     Required behavior:
     1. Importing `final_script.py` must start no server, perform no fetch, and write no files.
-    2. `python final_script.py --help` or an equivalent help path must explain
+    2. `"$WEBWRIGHT_PYTHON" final_script.py --help` or an equivalent help path must explain
        both how to run the task once and how to start the app.
-    3. `python final_script.py` must create or refresh the `app/` directory, reset `final_script_log.txt`, start a Python standard library HTTP server on localhost, and print a URL like `http://127.0.0.1:<port>/`.
+    3. `"$WEBWRIGHT_PYTHON" final_script.py` must create or refresh the `app/` directory, reset `final_script_log.txt`, start a Python standard library HTTP server on localhost, and print a URL like `http://127.0.0.1:<port>/`.
     4. Use the Python standard library HTTP server stack (`http.server`, `socketserver`, or equivalent) for the local server. Do not use Node, Electron, Tauri, or extra dependencies.
     5. `index.html` must link `manifest.webmanifest` and `icon.svg`, load `app.js`, show a visible loading state on page load, render cached `/feed.json` immediately when available, and call `/run` in the background.
     6. `/run` must execute the hard-coded multisite collection flow from the
        task, including browser automation when that is how the task data is
        obtained, update `app/feed.json`, and return the same unified JSON.
-    7. `python final_script.py --run-once` must execute that same collection
+    7. `"$WEBWRIGHT_PYTHON" final_script.py --run-once` must execute that same collection
        flow without starting the server, write `app/feed.json`, print the
        unified JSON, and preserve the same source-status/error semantics.
     8. The frontend must render a read-only feed UI: title, update time, source statuses, feed items, original links, metadata, visible errors, and visible empty state. No login, editing, source management, notifications, or background scheduler.
@@ -179,7 +199,7 @@ agent:
     ```
     {
       "thought": "Run a Playwright script inside one bash command, capture screenshots, and print aria evidence for the next step.",
-      "bash_command": "python - <<'PY'
+      "bash_command": "\"$WEBWRIGHT_PYTHON\" - <<'PY'
     import asyncio
     import os
     from pathlib import Path
@@ -219,12 +239,12 @@ agent:
       ```
     - Locate and inspect the app/feed reference template:
       ```
-      python -c "from pathlib import Path; import webwright; print(Path(webwright.__file__).resolve().parent / 'reference' / 'app_feed_template.py')"
+      "$WEBWRIGHT_PYTHON" -c "from pathlib import Path; import webwright; print(Path(webwright.__file__).resolve().parent / 'reference' / 'app_feed_template.py')"
       sed -n '1,260p' <template_path_from_previous_command>
       ```
     - Test import safety:
       ```
-      python - <<'PY'
+      "$WEBWRIGHT_PYTHON" - <<'PY'
       import importlib.util
       from pathlib import Path
       path = Path("final_runs/run_<id>/final_script.py")
@@ -236,11 +256,11 @@ agent:
       ```
     - Run the reusable task once without opening the app:
       ```
-      python final_runs/run_<id>/final_script.py --run-once
+      "$WEBWRIGHT_PYTHON" final_runs/run_<id>/final_script.py --run-once
       ```
     - Start the app for endpoint smoke tests:
       ```
-      python final_runs/run_<id>/final_script.py --host 127.0.0.1 --port 8765
+      "$WEBWRIGHT_PYTHON" final_runs/run_<id>/final_script.py --host 127.0.0.1 --port 0
       ```
     - Inspect run artifacts:
       ```
@@ -248,7 +268,7 @@ agent:
       ```
     - Run self_reflection after final screenshots exist:
       ```
-      python -m webwright.tools.self_reflection \
+      "$WEBWRIGHT_PYTHON" -m webwright.tools.self_reflection \
         --config app_judge_config.json \
         --workspace-dir "{{ workspace_dir }}" \
         --output final_runs/run_<id>/app_judge_result.json
@@ -300,16 +320,16 @@ agent:
          `--run-once` task mode and app/server mode.
       4. `final_script.py` follows the app/feed template structure and only customizes task-specific source extraction and feed presentation.
       5. An import-safety test completed without starting a server, fetching, or writing files.
-      6. `python final_script.py --run-once` executed the reusable task,
+      6. `"$WEBWRIGHT_PYTHON" final_script.py --run-once` executed the reusable task,
          printed schema-valid JSON, and wrote matching `app/feed.json`.
-      7. `python final_script.py` started a local server and printed its URL.
+      7. `"$WEBWRIGHT_PYTHON" final_script.py` started a local server and printed its URL.
       8. `index.html`, `manifest.webmanifest`, `feed.json`, and `/healthz` were reachable through the local server.
       9. `/run` returned schema-valid JSON and wrote matching `app/feed.json`.
       10. The frontend renders cached `feed.json` before `/run` completes when cached items exist.
       11. Final screenshots show task-relevant source/browser evidence,
           loading, successful feed items, and error or empty-state evidence.
       12. `final_script_log.txt` records run-once execution, server URL, every source status, and final item count.
-      13. `python -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json` exited 0 and wrote `"predicted_label": 1`.
+      13. `"$WEBWRIGHT_PYTHON" -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json` exited 0 and wrote `"predicted_label": 1`.
 
     Do NOT declare done if any required app file is missing, if source evidence
     screenshots are unrelated to the user's task, if the final script discarded
@@ -351,7 +371,7 @@ agent:
       only the final human-facing display layer.
     - The app's fixed sources, topic, filters, and query are determined from the task. Do not add runtime source editing, login, notifications, or background refresh.
     - Opening the local page must show loading, call `/run`, and render the latest unified feed.
-    - `/run` and `python final_script.py --run-once` must call the same
+    - `/run` and `"$WEBWRIGHT_PYTHON" final_script.py --run-once` must call the same
       hard-coded collection workflow, including Playwright browser automation
       when the task requires browser-visible source pages, update
       `app/feed.json`, and return the same schema-valid JSON.
@@ -395,9 +415,9 @@ agent:
     5. **Final script**: Write `final_script.py` in a new `final_runs/run_<id>/` by copying the app template structure and replacing task-specific config/fetchers. It must create the `app/` files, expose `--run-once` for reusable task execution, start a local HTTP server, serve `/run`, serve `/healthz`, and log all source statuses. If browser exploration was required to solve the task, both `--run-once` and `/run` must replay the same browser-backed collection flow or an equivalent discovered site-backed request flow, and they must preserve source evidence screenshots/logs.
 
     6. **Smoke test**:
-       - Run `python final_runs/run_<id>/final_script.py --help` or equivalent.
+       - Run `"$WEBWRIGHT_PYTHON" final_runs/run_<id>/final_script.py --help` or equivalent.
        - Run an import-safety test.
-       - Run `python final_runs/run_<id>/final_script.py --run-once`, validate the printed schema, and confirm `app/feed.json` matches.
+       - Run `"$WEBWRIGHT_PYTHON" final_runs/run_<id>/final_script.py --run-once`, validate the printed schema, and confirm `app/feed.json` matches.
        - Start the server, open the printed URL, and confirm static app files are reachable.
        - Request `/run`, validate schema, and confirm `app/feed.json` matches.
        - Confirm cached `feed.json` renders before `/run` completes when cached items exist.
@@ -405,7 +425,7 @@ agent:
          task sites plus local app loading, success/feed, and error/empty
          screenshots under the run's `screenshots/` directory.
 
-    7. **Run self_reflection**: Execute `python -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json`. If it exits non-zero or `predicted_label != 1`, diagnose, fix `final_script.py`, re-run in `final_runs/run_<id+1>/`, and re-invoke self_reflection against the new run.
+    7. **Run self_reflection**: Execute `"$WEBWRIGHT_PYTHON" -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json`. If it exits non-zero or `predicted_label != 1`, diagnose, fix `final_script.py`, re-run in `final_runs/run_<id+1>/`, and re-invoke self_reflection against the new run.
 
     8. **Declare done**: Set `"done": true` only after the latest run satisfies every app/feed critical point and `app_judge_result.json` reports `"predicted_label": 1`.
 
@@ -432,14 +452,14 @@ agent:
     3. `final_script.py --help` or equivalent was run and documents `--run-once`.
     4. `final_script.py` follows the app/feed template shape.
     5. Import-safety smoke test passed.
-    6. `python final_script.py --run-once` executed the reusable task, returned schema-valid JSON, and wrote matching `app/feed.json`.
-    7. `python final_script.py` started a local server and printed a URL.
+    6. `"$WEBWRIGHT_PYTHON" final_script.py --run-once` executed the reusable task, returned schema-valid JSON, and wrote matching `app/feed.json`.
+    7. `"$WEBWRIGHT_PYTHON" final_script.py` started a local server and printed a URL.
     8. `index.html`, `manifest.webmanifest`, `feed.json`, and `/healthz` were reachable.
     9. `/run` returned schema-valid JSON and wrote matching `app/feed.json`.
     10. Cached `feed.json` renders before `/run` completes when cached items exist.
     11. `final_script_log.txt` records run-once execution, server URL, every source status, final item count, and task-relevant source collection evidence.
     12. Final screenshots prove task source evidence, loading, successful feed items, and error or empty-state evidence.
-    13. `python -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json` exited 0 and wrote `"predicted_label": 1`.
+    13. `"$WEBWRIGHT_PYTHON" -m webwright.tools.self_reflection --config app_judge_config.json --workspace-dir "{{ workspace_dir }}" --output final_runs/run_<id>/app_judge_result.json` exited 0 and wrote `"predicted_label": 1`.
 
     Do NOT declare done if the app server was not run, if `/run` was not
     exercised, if app files are missing, if screenshots are unrelated to the

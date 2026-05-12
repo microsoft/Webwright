@@ -66,6 +66,7 @@ environment:
   task_metadata_filename: task.json
   final_script_name: final_script.py
   output_truncation_chars: 24000
+  command_preview_chars: 2000
   final_script_preview_chars: 4000
   recent_files_limit: 40
   env:

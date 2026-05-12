@@ -209,6 +209,7 @@ class BaseModelConfig(PydanticBaseModel):
     request_timeout_seconds: int = 120
     error_log_path: Path | None = None
     observation_template: OptStr = DEFAULT_OBSERVATION_TEMPLATE
+    observation_truncation_chars: int = 12000
     format_error_template: OptStr = DEFAULT_FORMAT_ERROR_TEMPLATE
     attach_observation_screenshot: bool = True
     action_field: str = "bash_command"
@@ -384,6 +385,10 @@ class BaseModel:
                 observation=observation,
                 **(template_vars or {}),
             )
+            limit = self.config.observation_truncation_chars
+            if limit > 0 and len(content) > limit:
+                omitted = len(content) - limit
+                content = f"{content[:limit]}\n\n... [{omitted} observation characters omitted]"
 
             parts: list[dict[str, Any]] = [text_part(content)]
             screenshot_path = observation.get("screenshot_path")

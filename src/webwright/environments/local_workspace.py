@@ -3,13 +3,15 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field
 
-_EXPORT_RE = re.compile(r"^export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
+_ENV_ASSIGNMENT_RE = re.compile(r"^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
 _IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 
 
@@ -40,6 +42,7 @@ class LocalWorkspaceEnvironmentConfig(BaseModel):
     task_metadata_filename: str = "task.json"
     final_script_name: str = "final_script.py"
     output_truncation_chars: int = 12000
+    command_preview_chars: int = 2000
     final_script_preview_chars: int = 4000
     recent_files_limit: int = 40
 
@@ -64,7 +67,7 @@ class LocalWorkspaceEnvironment:
             line = raw_line.strip()
             if not line or line.startswith("#"):
                 continue
-            match = _EXPORT_RE.match(line)
+            match = _ENV_ASSIGNMENT_RE.match(line)
             if match is None:
                 continue
             key, raw_value = match.groups()
@@ -73,6 +76,27 @@ class LocalWorkspaceEnvironment:
                 value = value[1:-1]
             parsed[key] = value
         return parsed
+
+    def _python_env(self) -> dict[str, str]:
+        """Expose the runner interpreter to agent-authored shell commands.
+
+        Webwright requires Python >=3.10. If the CLI is launched from an activated
+        environment such as ``conda activate metachain``, subprocess commands
+        should use that same interpreter instead of falling back to a system/base
+        ``python`` that may be too old.
+        """
+
+        configured = os.environ.get("WEBWRIGHT_PYTHON") or sys.executable
+        resolved = shutil.which(configured) if not Path(configured).is_absolute() else configured
+        python_path = str(Path(resolved or configured).resolve())
+        python_dir = str(Path(python_path).parent)
+        current_path = os.environ.get("PATH", "")
+        path = python_dir if not current_path else f"{python_dir}{os.pathsep}{current_path}"
+        return {
+            "WEBWRIGHT_PYTHON": python_path,
+            "PYTHON": python_path,
+            "PATH": path,
+        }
 
     def _workspace_dir(self) -> Path:
         return self.config.output_dir.resolve()
@@ -178,10 +202,10 @@ class LocalWorkspaceEnvironment:
         command = str(
             action.get("command") or action.get("bash_command") or action.get("python_code") or ""
         ).strip()
-        self._persist_step_command(command)
+        step_path = self._persist_step_command(command)
         resolved_cwd = self._resolve_cwd(cwd)
 
-        command_env = os.environ | self._credential_env | self._browser_env() | self.config.env | {
+        command_env = os.environ | self._credential_env | self._python_env() | self._browser_env() | self.config.env | {
             "WORKSPACE_DIR": str(self._workspace_dir()),
             "OM2W_TASK_JSON": str(self._task_metadata_path()),
             "FINAL_SCRIPT_PATH": str(self._final_script_path()),
@@ -214,6 +238,7 @@ class LocalWorkspaceEnvironment:
         log_path = self._write_step_log(output)
         observation = self._capture_observation(
             command=command,
+            step_path=step_path,
             cwd=resolved_cwd,
             output=output,
             returncode=returncode,
@@ -231,6 +256,7 @@ class LocalWorkspaceEnvironment:
         self,
         *,
         command: str,
+        step_path: Path,
         cwd: Path,
         output: str,
         returncode: int,
@@ -252,7 +278,8 @@ class LocalWorkspaceEnvironment:
         return {
             "success": returncode == 0 and not exception_info,
             "exception": exception_info,
-            "command": command,
+            "command": self._truncate(command, self.config.command_preview_chars),
+            "command_path": str(step_path),
             "returncode": returncode,
             "workspace_dir": str(workspace_dir),
             "cwd": str(cwd),
