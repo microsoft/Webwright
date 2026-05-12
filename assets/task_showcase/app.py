@@ -1,31 +1,38 @@
-"""Flask dashboard for the 6 perfect-task showcase.
+"""Flask dashboard for repeatable task-showcase JSON.
 
-Each task lives under ``tasks/<short_id>/`` with these artifacts produced by
-``final_script.py``:
+Each task lives under ``tasks/<short_id>/``. The only required files are:
 
-    final_script_log.txt  – ``step N action: ...`` lines + ``Final Response: ...``
-    steps.jsonl           – one JSON object per step with screenshot path
-    screenshots/          – PNGs named ``final_execution_<N>_<slug>.png``
-    result.txt            – single float (rubric average)
-    task.json             – metadata written by the build script
+    task.json    – metadata written by the build script
+    report.json  – structured output consumed by the generic template
+
+Optional run artifacts such as ``final_script_log.txt``, ``steps.jsonl``, and
+``screenshots/`` are used when present, but the renderer does not require them.
 
 Routes:
-    /                              – dashboard listing all 6 tasks
-    /task/<short_id>               – per-task rich view (timeline, live pages,
-                                     rubrics, lightbox, iframe modal)
-    /task/<short_id>/screenshot/.. – screenshot file
+    /                              – dashboard listing available tasks
+    /task/<short_id>               – per-task report view
+    /task/<short_id>/screenshot/.. – optional screenshot file
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 
 from flask import Flask, abort, render_template, send_from_directory
 
 ROOT = Path(__file__).resolve().parent
-TASKS_DIR = ROOT / "tasks"
+
+
+def _resolve_tasks_dir(value: str | Path | None = None) -> Path:
+    if value is None:
+        value = os.environ.get("TASK_SHOWCASE_TASKS_DIR") or ROOT / "tasks"
+    return Path(value).expanduser().resolve()
+
+
+TASKS_DIR = _resolve_tasks_dir()
 
 app = Flask(__name__)
 
@@ -210,6 +217,12 @@ def task_view(short_id: str):
         report = {}
     sources = report.get("sources", [])
     result = report.get("result", {"sections": []})
+    num_steps = len(steps)
+    if not num_steps:
+        try:
+            num_steps = int(info.get("num_steps") or 0)
+        except (TypeError, ValueError):
+            num_steps = 0
     return render_template(
         "task.html",
         info=info,
@@ -217,7 +230,7 @@ def task_view(short_id: str):
         sources=sources,
         result=result,
         updated=updated,
-        num_steps=len(steps),
+        num_steps=num_steps,
     )
 
 
@@ -234,8 +247,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=5005)
+    parser.add_argument(
+        "--tasks-dir",
+        type=Path,
+        default=None,
+        help="Directory containing <short_id>/task.json and report.json folders.",
+    )
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
+    global TASKS_DIR
+    TASKS_DIR = _resolve_tasks_dir(args.tasks_dir)
     app.run(host=args.host, port=args.port, debug=args.debug)
 
 
