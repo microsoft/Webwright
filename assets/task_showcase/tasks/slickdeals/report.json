@@ -1,0 +1,69 @@
+{
+  "sources": [
+    {
+      "name": "Slickdeals — featured deal",
+      "url": "https://slickdeals.net/",
+      "note": "front-page best deal"
+    },
+    {
+      "name": "CheapCharts — iTunes deals",
+      "url": "https://www.cheapcharts.com/deals",
+      "note": "movie / TV / audiobook"
+    },
+    {
+      "name": "Epic Games Store — homepage",
+      "url": "https://store.epicgames.com/en-US/",
+      "note": "current featured sale"
+    },
+    {
+      "name": "Split Fiction — product page",
+      "url": "https://store.epicgames.com/en-US/p/split-fiction",
+      "note": "game-store option"
+    }
+  ],
+  "result": {
+    "headline": "Today's bargain roundup",
+    "sections": [
+      {
+        "type": "summary",
+        "title": "Slickdeals featured deal",
+        "body": "Costco Members: Extra Savings on Select Apparel — $10 Off When You Buy 3+"
+      },
+      {
+        "type": "table",
+        "title": "CheapCharts picks (iTunes)",
+        "columns": [
+          "Category",
+          "Title",
+          "Price"
+        ],
+        "rows": [
+          [
+            "Movie",
+            "Hats Off to Love",
+            "$4.99"
+          ],
+          [
+            "TV season",
+            "Confess, Season 1",
+            "$4.99"
+          ],
+          [
+            "Audiobook",
+            "The Return of Odin (Unabridged)",
+            "$4.99"
+          ]
+        ]
+      },
+      {
+        "type": "list",
+        "title": "Epic Games Store — confirmations",
+        "entries": [
+          "Viewed Epic Games Store homepage",
+          "Viewed current featured sale: Discover: Epic Savings Sale",
+          "Viewed Split Fiction product page"
+        ]
+      }
+    ]
+  }
+}

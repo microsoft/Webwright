@@ -1,0 +1,11 @@
+{
+  "task_id": "0106b570440ffe4427d5e916f39ec986ab3de917",
+  "short_id": "slickdeals",
+  "title": "Slickdeals featured deal + CheapCharts iTunes picks",
+  "theme": "Deals roundup",
+  "cadence": "hourly",
+  "level": "easy",
+  "website": "https://www.google.com",
+  "task_prompt": "I want to make myself a quick bargain roundup and keep it grounded in deals that are actually live on the sites right now. Please start on Slickdeals and open whatever is currently being shown as the featured best deal, then grab the exact title and current price so I have a benchmark for what counts as a standout offer today; leave that deal page open in its own tab so I can look at it afterward. Then go to CheapCharts and browse the current iTunes deals to find one on-sale movie, one on-sale TV season, and one on-sale audiobook that feel like easy low-cost digital add-ons compared with the Slickdeals benchmark, and open each of those actual CheapCharts deal pages in separate tabs so I can visually compare them. After that, head to the Epic Games Store homepage, then open the current seasonal or featured sale page, and also pull up the product page for Split Fiction in another tab so I can include one game-store option alongside the media deals and have proof you actually viewed both Epic pages. When you’re done, give me a concise roundup with the Slickdeals featured deal, the three CheapCharts picks labeled by category with prices, and a short confirmation that you viewed the Epic Games Store homepage, the current seasonal or featured sale page, and the Split Fiction product page.",
+  "num_steps": 9
+}

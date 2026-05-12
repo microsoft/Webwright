@@ -1,0 +1,133 @@
+{
+  "sources": [
+    {
+      "name": "Apartments.com — The Ophelia",
+      "url": "https://www.apartments.com/the-ophelia-pittsburgh-pa/",
+      "note": "floor plans / availability"
+    },
+    {
+      "name": "WeatherTech — 2020 Toyota Highlander",
+      "url": "https://www.weathertech.com/cargo-liner-toyota-highlander.html?year=2020&ymmSearch=true",
+      "note": "cargo liner"
+    },
+    {
+      "name": "AoonuAuto — Honda Civic LED emblem",
+      "url": "https://aoonuauto.com/products/honda-civic-car-emblems-led-logo-badges"
+    },
+    {
+      "name": "Zillow — Pittsburgh homes for sale",
+      "url": "https://www.zillow.com/pittsburgh-pa/",
+      "note": "5 live listings"
+    }
+  ],
+  "result": {
+    "headline": "Renting at The Ophelia vs. buying nearby — snapshot",
+    "sections": [
+      {
+        "type": "table",
+        "title": "Available floor plans at The Ophelia",
+        "columns": [
+          "Plan",
+          "Layout"
+        ],
+        "rows": [
+          [
+            "S6H",
+            "Studio / 1 Bath"
+          ],
+          [
+            "S4",
+            "Studio / 1 Bath"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Vehicle move-in cost references",
+        "columns": [
+          "Item",
+          "Product",
+          "Price"
+        ],
+        "rows": [
+          [
+            "WeatherTech",
+            "2020 Toyota Highlander Cargo/Trunk Liner",
+            "$250"
+          ],
+          [
+            "LED emblem (Civic)",
+            "Honda CIVIC Car Emblems LED LOGO Badges",
+            "$109.99"
+          ]
+        ]
+      },
+      {
+        "type": "cards",
+        "title": "Buying side — 5 Zillow listings",
+        "entries": [
+          {
+            "title": "523 N Euclid Ave",
+            "subtitle": "Pittsburgh, PA 15206",
+            "fields": [
+              [
+                "note",
+                "Highland Park / East Liberty — closest comp"
+              ]
+            ],
+            "url": "https://www.zillow.com/homedetails/523-N-Euclid-Ave-Pittsburgh-PA-15206/11622890_zpid/"
+          },
+          {
+            "title": "725 N Beatty St",
+            "subtitle": "Pittsburgh, PA 15206",
+            "fields": [
+              [
+                "note",
+                "Nearby comp to The Ophelia"
+              ]
+            ],
+            "url": "https://www.zillow.com/homedetails/725-N-Beatty-St-Pittsburgh-PA-15206/11622933_zpid/"
+          },
+          {
+            "title": "234 Olympia St",
+            "subtitle": "Pittsburgh, PA 15211",
+            "fields": [
+              [
+                "note",
+                "Broadens price range"
+              ]
+            ],
+            "url": "https://www.zillow.com/homedetails/234-Olympia-St-Pittsburgh-PA-15211/11586269_zpid/"
+          },
+          {
+            "title": "211 S Margery Dr",
+            "subtitle": "Pittsburgh, PA 15238",
+            "fields": [
+              [
+                "note",
+                "Broadens location range"
+              ]
+            ],
+            "url": "https://www.zillow.com/homedetails/211-S-Margery-Dr-Pittsburgh-PA-15238/11375044_zpid/"
+          },
+          {
+            "title": "637 Kelso Rd",
+            "subtitle": "Pittsburgh, PA 15243",
+            "fields": [
+              [
+                "note",
+                "Broadens location range"
+              ]
+            ],
+            "url": "https://www.zillow.com/homedetails/637-Kelso-Rd-Pittsburgh-PA-15243/11360842_zpid/"
+          }
+        ]
+      },
+      {
+        "type": "summary",
+        "title": "Bottom line",
+        "body": "The Ophelia is a studio-focused, lower-space but lower-commitment rental. Buying nearby gives more space and long-term equity potential. 523 N Euclid Ave and 725 N Beatty St are the most directly comparable buy-side options."
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "task_id": "78ddd1aab59eebace5f6f523d90012aa6c871c54",
+  "short_id": "ophelia_pittsburgh",
+  "title": "The Ophelia, Pittsburgh — availability watch",
+  "theme": "Real estate",
+  "cadence": "daily",
+  "level": "medium",
+  "website": "https://www.google.com",
+  "task_prompt": "I’m trying to decide whether renting at The Ophelia in Pittsburgh makes more sense than buying nearby, so could you help me look at both sides in the browser? Start on apartments.com and open The Ophelia’s actual floor plan or availability page, then note at least two floor plans that are currently shown as available, including each plan’s name and the bedroom/bathroom setup, and leave that page open so I can look at the layouts myself. Since Pittsburgh winters are rough and I’m also thinking about car-related moving costs, go to WeatherTech and use their vehicle selector for a 2020 Toyota Highlander to find the floor mat and cargo liner options that fit, then open the cargo liner product page and keep that tab open as a reference. After that, use Google to find one LED emblem option for a 2023 Honda Civic, and click through to the actual product page so you can capture the product name and price rather than just a search snippet. Once you have those cost references, go to Zillow and search around the same Pittsburgh area for homes currently for sale that could realistically compete with renting there, then open five live listings in separate tabs and capture each property’s address and listing URL so I can compare them side by side. In the end, give me a concise comparison that pulls together the two apartment floor plans, the WeatherTech cargo liner reference, the LED emblem option, and the five Zillow listings so I can get a real renting-versus-buying snapshot.",
+  "num_steps": 13
+}

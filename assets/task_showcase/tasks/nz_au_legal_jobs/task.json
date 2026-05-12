@@ -1,0 +1,11 @@
+{
+  "task_id": "9825e1505ad6eacf0ae2af5709a74d9eb0280029",
+  "short_id": "nz_au_legal_jobs",
+  "title": "NZ→AU 2–4 PQE legal roles tracker",
+  "theme": "Job tracker",
+  "cadence": "weekly",
+  "level": "hard",
+  "website": "https://www.legalpeople.com.au",
+  "task_prompt": "I’m trying to figure out where I could realistically apply in Australia as a New Zealand-qualified lawyer with about three years of post-qualification experience, and I want a serious browser-based market sweep rather than a skim of one recruiter site. Please start with Legal People Australia, but then widen naturally to other Australian legal recruiters, major job boards, and public law-firm or in-house careers pages so we’re not missing obvious opportunities. Build me a shortlist of exactly 18 to 24 current roles that are genuinely relevant to someone around 2 to 4 PQE, and only include roles where the listing either explicitly welcomes New Zealand qualification or NZ admission, is silent but otherwise looks plausibly transferable, or clearly states Australian admission is required so that distinction is visible. For each shortlisted role, record the job title, employer or recruiter, city/state, practice area, stated PQE or experience range, whether NZ-qualified or NZ-admitted candidates are explicitly mentioned, whether Australian admission appears mandatory, whether a practising certificate or relocation detail is mentioned, and the application link; if a field is missing, mark it as not shown. Keep the work grounded in public pages only. Open and keep available the strongest evidence tabs for at least 8 representative roles spread across different cities or practice areas so I can sanity-check them later, including a mix of recruiter listings and direct employer pages if available. As you go, compare patterns across the market and separate the shortlist into three buckets: clearly eligible now, likely eligible but needs admission clarification, and probably not viable without current Australian admission. Finish with one organized tracker or memo that includes all 18 to 24 roles plus a concise recommendation on where I should focus first by city and practice area, and leave the finished tracker and the most useful evidence tabs open. I would prefer a CrpytoPad Spreadsheet for this tracker.",
+  "num_steps": 17
+}

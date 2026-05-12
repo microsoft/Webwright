@@ -3,7 +3,6 @@
 *.egg-info/
 outputs/
 .tmp/
-tasks/
 .claude/
 .venv/
 venv/

@@ -1,0 +1,61 @@
+{
+  "sources": [
+    {
+      "name": "Google — Baltimore, MD weather",
+      "url": "https://www.google.com/search?q=Baltimore+Maryland+weather"
+    },
+    {
+      "name": "Wunderground — Syracuse, NY",
+      "url": "https://www.wunderground.com/forecast/us/ny/syracuse"
+    },
+    {
+      "name": "NWS Cleveland — Rittman/Marshallville",
+      "url": "https://forecast.weather.gov/MapClick.php?lat=40.978&lon=-81.7818"
+    },
+    {
+      "name": "NWS Mount Holly",
+      "url": "https://www.weather.gov/phi/"
+    }
+  ],
+  "result": {
+    "headline": "This-week driving weather snapshot",
+    "sections": [
+      {
+        "type": "table",
+        "title": "Per-location risk",
+        "columns": [
+          "Location",
+          "Headline",
+          "Detail"
+        ],
+        "rows": [
+          [
+            "Baltimore, MD",
+            "Baseline 67°F, partly sunny",
+            "Calm — no driving concern at home"
+          ],
+          [
+            "Syracuse, NY",
+            "Lowest next-7-day temp 36°F",
+            "Chilly overnight low on Sat 5/2"
+          ],
+          [
+            "Rittman / Marshallville, OH",
+            "Hazardous Weather Outlook posted",
+            "This afternoon: slight chance of showers, partly sunny, high near 54, NW wind ~10 mph"
+          ],
+          [
+            "Mount Holly region (Mid-Atlantic)",
+            "Snowfall 0\"",
+            "Range 0\" – 0\" on the Snowfall Totals by Location table"
+          ]
+        ]
+      },
+      {
+        "type": "summary",
+        "title": "Drive-risk verdict",
+        "body": "Baltimore baseline mild; Mid-Atlantic snowfall flat at 0\". Watch Ohio leg for the Hazardous Weather Outlook and a chilly overnight if heading toward Syracuse."
+      }
+    ]
+  }
+}

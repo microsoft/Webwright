@@ -1,0 +1,62 @@
+{
+  "sources": [
+    {
+      "name": "Best Buy",
+      "url": "https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+trading+card"
+    },
+    {
+      "name": "Barnes & Noble",
+      "url": "https://www.barnesandnoble.com/s/pokemon+trading+card"
+    },
+    {
+      "name": "Walmart",
+      "url": "https://www.walmart.com/search?q=pokemon+trading+card"
+    }
+  ],
+  "result": {
+    "headline": "In-stock Pokémon TCG sweep",
+    "sections": [
+      {
+        "type": "table",
+        "title": "Available items across retailers",
+        "columns": [
+          "Retailer",
+          "Product",
+          "Price",
+          "Availability"
+        ],
+        "rows": [
+          [
+            "Best Buy",
+            "Pokémon TCG — Scarlet & Violet Journey Together Booster Bundle 6 Pk",
+            "$49.99",
+            "Add to cart"
+          ],
+          [
+            "Best Buy",
+            "Pokémon TCG — Mega Evolution: Ascended Heroes Premium Poster Collection",
+            "$199.99",
+            "Add to cart"
+          ],
+          [
+            "Barnes & Noble",
+            "How The Pokémon TCG Became A Global Trading Card Game Phenomenon (book)",
+            "$21.99",
+            "In stock"
+          ],
+          [
+            "Walmart",
+            "Pokémon TCG — Greninja ex Battle Deck",
+            "$23.13",
+            "Sold & shipped by Walmart.com"
+          ]
+        ]
+      },
+      {
+        "type": "summary",
+        "title": "Cheapest in-stock pick",
+        "body": "Barnes & Noble — “How The Pokémon TCG Became A Global Trading Card Game Phenomenon” at $21.99. Recommendation: buy from Barnes & Noble."
+      }
+    ]
+  }
+}

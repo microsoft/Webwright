@@ -1,0 +1,68 @@
+{
+  "sources": [
+    {
+      "name": "Legal People Australia",
+      "url": "https://www.legalpeople.com.au/jobs",
+      "note": "starting recruiter"
+    },
+    {
+      "name": "Seek — Legal jobs",
+      "url": "https://www.seek.com.au/legal-jobs",
+      "note": "main AU job board"
+    },
+    {
+      "name": "LinkedIn — AU legal jobs",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=lawyer&location=Australia"
+    },
+    {
+      "name": "Burgess Paluch (recruiter)",
+      "url": "https://www.burgesspaluch.com.au/jobs/"
+    },
+    {
+      "name": "Mahlab (recruiter)",
+      "url": "https://www.mahlab.com.au/jobs/"
+    }
+  ],
+  "result": {
+    "headline": "AU legal market sweep — NZ-qualified, ~3 PQE",
+    "sections": [
+      {
+        "type": "kv",
+        "title": "Shortlist totals",
+        "entries": [
+          [
+            "Roles shortlisted",
+            "18"
+          ],
+          [
+            "Clearly eligible now",
+            "0"
+          ],
+          [
+            "Likely eligible — needs admission clarification",
+            "15"
+          ],
+          [
+            "Probably not viable without current AU admission",
+            "3"
+          ]
+        ]
+      },
+      {
+        "type": "summary",
+        "title": "Where to focus first",
+        "body": "Sydney, Melbourne, Canberra, Brisbane, and Perth across disputes/litigation, commercial, family, public law, and junior in-house roles. Prioritise listings that are silent on admission but a strong 2–4 PQE fit. Deprioritise roles that expressly require current Australian admission or a practising certificate."
+      },
+      {
+        "type": "list",
+        "title": "Practical filters used",
+        "entries": [
+          "Only public pages — recruiters, AU job boards, direct firm/in-house careers",
+          "Strictly 2–4 PQE relevance",
+          "Bucketed by AU-admission status so the distinction is visible",
+          "8+ representative evidence tabs spread across cities & practice areas"
+        ]
+      }
+    ]
+  }
+}

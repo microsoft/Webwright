@@ -1,0 +1,137 @@
+{
+  "sources": [
+    {
+      "name": "Zillow — Domain/North Austin",
+      "url": "https://www.zillow.com/austin-tx/apartments/",
+      "note": "1+ bd, ≤$1,800, W/D + pool"
+    },
+    {
+      "name": "Apartments.com — same filter",
+      "url": "https://www.apartments.com/austin-tx/1-bedrooms/",
+      "note": "1 bd, ≤$1,800, W/D + pool"
+    },
+    {
+      "name": "CapMetro trip planner",
+      "url": "https://www.capmetro.org/ride/plan/trip-planner"
+    },
+    {
+      "name": "Niche — North Burnet",
+      "url": "https://www.niche.com/places-to-live/n/north-burnet-austin-tx/"
+    },
+    {
+      "name": "Texas AG — Renters' Rights",
+      "url": "https://www.texasattorneygeneral.gov/consumer-protection/home-real-estate-and-travel/renters-rights"
+    }
+  ],
+  "result": {
+    "headline": "Apartment-hunting brief — Domain / North Austin",
+    "sections": [
+      {
+        "type": "table",
+        "title": "Zillow comparison",
+        "columns": [
+          "Property",
+          "Address",
+          "Rent",
+          "Highlights"
+        ],
+        "rows": [
+          [
+            "Broadstone North ATX",
+            "10601 Center Lake Dr, 78753",
+            "$1,385+",
+            "Pool · In-unit laundry"
+          ],
+          [
+            "The Met",
+            "10101 Metropolitan Dr, 78758",
+            "$1,720+",
+            "Pool · In-unit laundry"
+          ],
+          [
+            "Residences at the Domain",
+            "11400 Domain Dr, 78758",
+            "$1,660+",
+            "Pool · In-unit laundry"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Apartments.com comparison",
+        "columns": [
+          "Property",
+          "Address",
+          "Rent",
+          "Highlights"
+        ],
+        "rows": [
+          [
+            "The Met",
+            "10101 Metropolitan Dr, 78758",
+            "$1,720+",
+            "Pool · W/D"
+          ],
+          [
+            "The Addison Apartments",
+            "2601 Esperanza Crossing, 78758",
+            "$1,190+",
+            "Pool · W/D"
+          ],
+          [
+            "Presidium 183",
+            "9111 Research Blvd, 78758",
+            "$1,367+",
+            "Pool · W/D"
+          ]
+        ]
+      },
+      {
+        "type": "list",
+        "title": "Shortlist (best overall fit)",
+        "entries": [
+          "The Addison Apartments — essentially in the Domain; easiest bus-and-walk commute",
+          "Residences at the Domain — best pure location fit, inside the Domain district",
+          "Broadstone North ATX — cheapest workable option; relies on a bus connection"
+        ]
+      },
+      {
+        "type": "kv",
+        "title": "Transit & neighborhood",
+        "entries": [
+          [
+            "Best transit",
+            "The Addison — short bus-and-walk to Domain"
+          ],
+          [
+            "Best location",
+            "Residences at the Domain — inside the district"
+          ],
+          [
+            "North Burnet on Niche",
+            "Overall A+, Public Schools A−, urban feel"
+          ],
+          [
+            "Walkability winners",
+            "Residences at the Domain & The Addison"
+          ],
+          [
+            "Caveat",
+            "Niche safety detail was limited — verify before signing"
+          ]
+        ]
+      },
+      {
+        "type": "list",
+        "title": "Lease-review checklist",
+        "entries": [
+          "Deposit amount, deduction rules, refund timing",
+          "Repair-request process, habitability, emergency maintenance",
+          "Every recurring + one-time fee disclosed before applying",
+          "Required disclosures and safety-device information",
+          "Move-out notice, early termination, statutory exceptions"
+        ]
+      }
+    ]
+  }
+}
