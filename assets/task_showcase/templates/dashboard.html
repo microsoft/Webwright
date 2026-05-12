@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Repeatable Task Showcase</title>
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --accent: #0e7490;
+      --good: #047857;
+      --good-bg: #ecfdf5;
+      --warn: #b45309;
+      --warn-bg: #fef3c7;
+      --bad: #b91c1c;
+      --bad-bg: #fef2f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.5;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 28px 64px; }
+
+    .eyebrow { color: var(--accent); font-size: 11.5px; font-weight: 700;
+               letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+    h1 { margin: 0; font-size: 36px; font-weight: 700; line-height: 1.15; }
+    .subtitle { color: var(--muted); font-size: 14px; margin: 6px 0 22px; }
+
+    .grid { display: grid; gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+    .card {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 8px; padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+      text-decoration: none; color: var(--text);
+      transition: border-color .12s, transform .12s, box-shadow .12s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-1px);
+                  text-decoration: none;
+                  box-shadow: 0 6px 18px rgba(15,23,42,.06); }
+    .card .topline { display: flex; justify-content: space-between; align-items: center;
+                     font-size: 11px; color: var(--muted); }
+    .card .topline .src-tag { font-weight: 600; color: var(--text); font-size: 12px; }
+
+    .pill {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      background: #e2e8f0; color: #1e293b;
+    }
+    .pill.ok    { background: var(--good-bg); color: var(--good); }
+    .pill.warn  { background: var(--warn-bg); color: var(--warn); }
+    .pill.error { background: var(--bad-bg);  color: var(--bad); }
+
+    .card h2 { margin: 4px 0 0; font-size: 16px; line-height: 1.3; }
+    .card .summary {
+      color: #334155; font-size: 13px; flex: 1; min-height: 60px;
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+    .meta {
+      display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px;
+      color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px;
+    }
+    .meta .k { color: var(--accent); font-weight: 600; margin-right: 3px; }
+    .score { color: var(--good); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Local Web-Agent Showcase · {{ tasks|length }} repeatable tasks</div>
+    <h1>Task Dashboard</h1>
+    <p class="subtitle">
+      Six perfect-score odyssey runs whose underlying data refreshes on a
+      schedule. Open any card to see the agent's findings, sources, critical
+      points, and screenshots from the run.
+    </p>
+
+    <div class="grid">
+      {% for t in tasks %}
+        <a class="card" href="{{ url_for('task_view', short_id=t.short_id) }}">
+          <div class="topline">
+            <span class="src-tag">{{ t.theme }}</span>
+            <span class="pill ok">{{ t.cadence }}</span>
+          </div>
+          <h2>{{ t.title }}</h2>
+          <div class="summary">{{ t.task_prompt[:240] }}{% if t.task_prompt|length > 240 %}…{% endif %}</div>
+        </a>
+      {% endfor %}
+    </div>
+  </main>
+</body>
+</html>

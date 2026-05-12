@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ info.title }} — Task Showcase</title>
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --panel: #ffffff;
+      --panel-2: #f9fafb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --accent: #0e7490;
+      --good: #047857;
+      --good-bg: #ecfdf5;
+      --warn: #b45309;
+      --warn-bg: #fef3c7;
+      --bad: #b91c1c;
+      --bad-bg: #fef2f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.5;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    main { max-width: 1080px; margin: 0 auto; padding: 28px 28px 64px; }
+
+    .back-link { font-size: 12px; color: var(--accent); display: inline-block; margin-bottom: 4px; }
+    .page-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 24px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .page-head .left { min-width: 0; flex: 1; }
+    .eyebrow { color: var(--accent); font-size: 11.5px; font-weight: 700;
+               letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+    .page-head h1 { margin: 0; font-size: 34px; font-weight: 700; line-height: 1.15; }
+    .updated { color: var(--muted); font-size: 13px; padding-top: 14px; white-space: nowrap; }
+
+    .banner {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 8px; padding: 14px 18px; display: flex; align-items: center;
+      gap: 12px; margin-bottom: 24px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--good); }
+    .banner .title { font-weight: 600; font-size: 14px; }
+    .banner .sub   { color: var(--muted); font-size: 13px; }
+
+    h2.section-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      letter-spacing: .04em; margin: 26px 0 10px;
+    }
+
+    /* sources */
+    .sources {
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .src {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 8px; padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .src .name { font-weight: 600; font-size: 13px; line-height: 1.3; }
+    .src .note { color: var(--muted); font-size: 12px; }
+    .pill {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      background: var(--good-bg); color: var(--good); width: fit-content;
+    }
+    .src .link { font-size: 12px; word-break: break-all; }
+
+    /* report sections */
+    .report { display: flex; flex-direction: column; gap: 18px; }
+    .panel {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 8px; padding: 16px 18px;
+    }
+    .panel h3 {
+      margin: 0 0 12px; font-size: 13px; font-weight: 700;
+      color: var(--text); letter-spacing: .02em;
+    }
+    .panel.summary { border-left: 3px solid var(--good); background: var(--good-bg); border-color: #a7f3d0; }
+    .panel.summary h3 { color: var(--good); }
+    .panel.summary p  { margin: 0; color: #064e3b; font-size: 14px; line-height: 1.55; }
+
+    /* table */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td {
+      text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-weight: 600; font-size: 11px;
+         text-transform: uppercase; letter-spacing: .04em; background: var(--panel-2); }
+    tr:last-child td { border-bottom: none; }
+    .panel.has-table { padding: 16px 0 4px; }
+    .panel.has-table h3 { padding: 0 18px; }
+    .panel.has-table table { padding: 0 18px; }
+    .panel.has-table th:first-child, .panel.has-table td:first-child { padding-left: 18px; }
+    .panel.has-table th:last-child,  .panel.has-table td:last-child  { padding-right: 18px; }
+
+    /* list */
+    .panel ul.bullets { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; color: #1e293b; }
+    .panel ul.bullets li { margin-bottom: 4px; }
+
+    /* kv */
+    .kv { display: grid; grid-template-columns: minmax(160px, 1fr) 2fr; gap: 6px 16px; font-size: 13.5px; }
+    .kv dt { color: var(--muted); font-weight: 600; }
+    .kv dd { margin: 0; color: #1e293b; }
+
+    /* cards section (for listings) */
+    .mini-cards { display: grid; gap: 10px;
+                  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .mini-card {
+      border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px;
+      background: var(--panel-2); display: flex; flex-direction: column; gap: 4px;
+    }
+    .mini-card .t { font-weight: 600; font-size: 13px; }
+    .mini-card .st { color: var(--muted); font-size: 12px; }
+    .mini-card .f { font-size: 12px; color: #334155; }
+    .mini-card .f .k { color: var(--accent); font-weight: 600; margin-right: 4px; }
+    .mini-card a { font-size: 12px; }
+
+    /* task description */
+    .desc { background: var(--panel); border: 1px solid var(--line);
+            border-radius: 8px; padding: 16px 18px; font-size: 14px; }
+    .desc .meta-line { color: var(--muted); font-size: 12px; margin-bottom: 10px;
+                       display: flex; gap: 16px; flex-wrap: wrap; }
+    .desc .meta-line .k { color: var(--accent); font-weight: 600; margin-right: 4px; }
+    .desc .body { color: #334155; line-height: 1.6; white-space: pre-wrap; }
+
+    details > summary { cursor: pointer; color: var(--accent); font-size: 12px;
+                        list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] > summary::after { content: " ▾"; }
+    details:not([open]) > summary::after { content: " ▸"; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back-link" href="{{ url_for('index') }}">← All tasks</a>
+    <div class="page-head">
+      <div class="left">
+        <div class="eyebrow">{{ info.theme }} · {{ info.cadence or 'on demand' }}</div>
+        <h1>{{ info.title }}</h1>
+      </div>
+      <div class="updated">Updated {{ updated }}</div>
+    </div>
+
+    <!-- status banner -->
+    <div class="banner">
+      <span class="dot"></span>
+      <div>
+        <div class="title">
+          {% if result.headline %}{{ result.headline }}{% else %}Run completed{% endif %}
+        </div>
+        <div class="sub">Refreshed in {{ num_steps }} agent steps · {{ sources|length }} source{{ '' if sources|length == 1 else 's' }} consulted</div>
+      </div>
+    </div>
+
+    <!-- sources -->
+    {% if sources %}
+    <h2 class="section-title">Sources</h2>
+    <div class="sources">
+      {% for s in sources %}
+        <div class="src">
+          <div class="name">{{ s.name }}</div>
+          {% if s.note %}<div class="note">{{ s.note }}</div>{% endif %}
+          <span class="pill">OK</span>
+          <a class="link" href="{{ s.url }}" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- structured report -->
+    {% if result.sections %}
+    <h2 class="section-title">Result</h2>
+    <div class="report">
+      {% for sec in result.sections %}
+        {% if sec.type == 'summary' %}
+          <div class="panel summary">
+            <h3>{{ sec.title }}</h3>
+            <p>{{ sec.body }}</p>
+          </div>
+        {% elif sec.type == 'table' %}
+          <div class="panel has-table">
+            <h3>{{ sec.title }}</h3>
+            <table>
+              <thead>
+                <tr>{% for c in sec.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+              </thead>
+              <tbody>
+                {% for row in sec.rows %}
+                  <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% elif sec.type == 'list' %}
+          <div class="panel">
+            <h3>{{ sec.title }}</h3>
+            <ul class="bullets">
+              {% for item in sec['entries'] %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% elif sec.type == 'kv' %}
+          <div class="panel">
+            <h3>{{ sec.title }}</h3>
+            <dl class="kv">
+              {% for k, v in sec['entries'] %}
+                <dt>{{ k }}</dt><dd>{{ v }}</dd>
+              {% endfor %}
+            </dl>
+          </div>
+        {% elif sec.type == 'cards' %}
+          <div class="panel">
+            <h3>{{ sec.title }}</h3>
+            <div class="mini-cards">
+              {% for c in sec['entries'] %}
+                <div class="mini-card">
+                  <div class="t">{{ c.title }}</div>
+                  {% if c.subtitle %}<div class="st">{{ c.subtitle }}</div>{% endif %}
+                  {% for k, v in c.fields or [] %}
+                    <div class="f"><span class="k">{{ k }}</span>{{ v }}</div>
+                  {% endfor %}
+                  {% if c.url %}<a href="{{ c.url }}" target="_blank" rel="noopener">Open ↗</a>{% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- raw final response (collapsed for verification) -->
+    {% if final_response %}
+    <h2 class="section-title">Raw agent output</h2>
+    <div class="panel">
+      <details>
+        <summary>Show raw final response</summary>
+        <p style="margin: 10px 0 0; font-size: 13px; color: #334155; white-space: pre-wrap;">{{ final_response }}</p>
+      </details>
+    </div>
+    {% endif %}
+
+    <!-- task description (background) -->
+    <h2 class="section-title">Task</h2>
+    <div class="desc">
+      <div class="meta-line">
+        <span><span class="k">level</span>{{ info.level }}</span>
+        <span><span class="k">site</span><a href="{{ info.website }}" target="_blank" rel="noopener">{{ info.website }}</a></span>
+        <span><span class="k">task_id</span>{{ info.task_id }}</span>
+      </div>
+      <div class="body">{{ info.task_prompt }}</div>
+    </div>
+  </main>
+</body>
+</html>

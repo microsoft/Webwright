@@ -1,0 +1,51 @@
+# Task Showcase — repeatable web-agent runs as a dashboard
+
+A tiny Flask app that consolidates Webwright runs for **repeatable** odyssey
+tasks (those whose answer changes over time — deals, inventory, listings,
+job boards, weather, etc.) into a single dashboard.
+
+Each task ships only two files:
+
+```
+tasks/<short_id>/
+  task.json     – metadata (title, theme, cadence, level, prompt, website)
+  report.json   – curated, structured agent output: {sources, result.sections}
+```
+
+The Flask app is fully generic: templates iterate `sources` and
+`result.sections` without any per-task branching, so adding a new task is
+just dropping in a new folder with those two files.
+
+## Run
+
+```bash
+pip install flask
+python app.py            # serves http://127.0.0.1:5005
+```
+
+## report.json shape
+
+```jsonc
+{
+  "sources": [
+    {"name": "Slickdeals", "url": "https://slickdeals.net/", "note": "front-page best deal"}
+  ],
+  "result": {
+    "headline": "Today's bargain roundup",
+    "sections": [
+      {"type": "summary", "title": "...", "body": "..."},
+      {"type": "table",   "title": "...", "columns": [...], "rows": [[...], ...]},
+      {"type": "list",    "title": "...", "entries": ["..."]},
+      {"type": "kv",      "title": "...", "entries": [["k", "v"], ...]},
+      {"type": "cards",   "title": "...", "entries": [
+        {"title": "...", "subtitle": "...", "fields": [["k","v"]], "url": "..."}
+      ]}
+    ]
+  }
+}
+```
+
+The 6 included tasks (Slickdeals, Pokémon TCG, Austin apartments, The Ophelia
+Pittsburgh, NZ→AU legal roles, this-week driving weather) each map to an
+odyssey benchmark task whose underlying pages refresh on a schedule, so the
+dashboard makes sense to re-run repeatedly.

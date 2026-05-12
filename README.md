@@ -22,6 +22,14 @@ Already got your favorite agents, and wonder how to make Claude Code, Codex, Her
 
 ---
 
+## 📰 News
+
+- **2026-05-11** — Support Agent2UI mode: Webwright completes the task and render task results into an html based web app you can easily view and reuse.  
+- **2026-05-06** — Codex and Claude Code plugin manifests added; install via `/plugin install webwright@webwright`. OpenClaw and Hermes Agent integrations shipped; the same `skills/webwright/` folder now loads across Claude Code, Codex, OpenClaw, and Hermes.
+- **2026-05-04** — Initial public release: ~1.5k LoC, OpenAI / Anthropic / OpenRouter backends, Playwright environment.
+
+---
+
 <details>
 <summary><strong>💡 Motivation: Beyond Step-by-Step Web Interaction in a Stateful Browser</strong></summary>
 
@@ -105,8 +113,30 @@ webwright/
 │   ├── models/              # openai_model, anthropic_model, base
 │   ├── config/              # base.yaml, model_openai.yaml, model_claude.yaml
 │   └── utils/
+├── assets/
+│   └── task_showcase/       # tiny Flask dashboard for repeatable runs
+│       ├── app.py
+│       ├── templates/       # dashboard.html, task.html
+│       └── tasks/<short_id>/ # task.json + report.json per task
 ├── tests/
 └── outputs/                 # run artifacts (trajectories, screenshots)
+```
+
+---
+
+## 📰 Task Showcase (repeatable runs as a dashboard)
+
+A tiny Flask app under [`assets/task_showcase/`](assets/task_showcase/README.md) consolidates
+Webwright runs for **repeatable** odyssey tasks (deals, inventory, listings,
+job boards, weather, etc.) into a single dashboard. Each task ships only two
+files — `task.json` (metadata) and `report.json` (curated, structured output:
+sources + result sections like tables, lists, summaries) — and the templates
+render them generically, so adding a new task is just dropping a new folder
+in `assets/task_showcase/tasks/`.
+
+```bash
+pip install flask
+python assets/task_showcase/app.py    # http://127.0.0.1:5005
 ```
 
 ---
