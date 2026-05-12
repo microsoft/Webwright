@@ -26,4 +26,4 @@ webwright = "webwright.run.cli:app"
 where = ["src"]
 
 [tool.setuptools.package-data]
-webwright = ["config/*.yaml", "config/**/*.yaml"]
+webwright = ["config/*.yaml", "config/**/*.yaml", "reference/*.py"]

@@ -169,6 +169,21 @@ python -m webwright.run.cli \
     -o outputs/default
 ```
 
+Use the YAML-only app/feed prompt overlay for multisite local PWA information
+feeds:
+
+```bash
+python -m webwright.run.cli \
+    -c base.yaml -c model_openai.yaml -c app_feed.yaml \
+    -t "Build a local feed app that compares current Apple Mac laptop prices across Apple, Best Buy, and B&H. Use browser evidence from the product/listing pages, and show each model with source, price, configuration, availability if visible, original link, and visible source errors." \
+    --task-id mac_price_feed \
+    -o outputs/default
+```
+
+This path is driven by `src/webwright/config/app_feed.yaml`; the app/feed
+contract is embedded in that YAML, and the agent only reads the packaged
+`webwright/reference/app_feed_template.py` file as the code skeleton.
+
 ### 🚩 Flags
 
 | Flag | Description |
