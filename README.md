@@ -139,6 +139,26 @@ pip install flask
 python assets/task_showcase/app.py    # http://127.0.0.1:5005
 ```
 
+To have Webwright produce a renderer-ready task folder at runtime, stack the
+Task Showcase overlay:
+
+```bash
+python -m webwright.run.cli \
+    -c base.yaml -c model_openai.yaml -c task_showcase.yaml \
+    -t "<repeatable web task>" \
+    --task-id my_repeatable_task \
+    -o outputs/default
+```
+
+The run writes `task_showcase/tasks/<short_id>/task.json` and `report.json`
+inside the output workspace. Render those generated files without copying them
+back into the repo:
+
+```bash
+python assets/task_showcase/app.py \
+    --tasks-dir outputs/default/<run>/task_showcase/tasks
+```
+
 ---
 
 ## 🚀 Quick Start
